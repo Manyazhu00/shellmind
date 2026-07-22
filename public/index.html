@@ -1,0 +1,2361 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-lang="zh">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>问龟 Shellmind · 让装修，不再靠运气 | Renovation, no longer left to luck</title>
+<link rel="icon" type="image/png" href="assets/mark.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+/* ============================================================
+   问龟官网 · AuraFlow-style rebuild (reference: Framer 导出站)
+   monochrome UI + pastel imagery + Google Sans 400 headings
+   ============================================================ */
+@font-face{font-family:"Google Sans";src:url("assets/gs-400.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap;}
+@font-face{font-family:"Google Sans";src:url("assets/gs-700.woff2") format("woff2");font-weight:700;font-style:normal;font-display:swap;}
+:root{
+  --bg:#FFFFFF; --card:#FFFFFF; --ink:#161A12; --ink2:#3C4236; --muted:#6E7560; --faint:#9C9C96;
+  --line:#EAE8E4; --line2:#DEDBD6;
+  --black:#2F3722; --black-hover:#3C4630;
+  /* 问龟 semantic (kept for product mocks only) */
+  --sage:#7D8A6E; --pine:#2F3722; --save:#1F8F52; --save-soft:#EFF9F2; --warn:#D99000; --danger:#D25B45;
+  --r-sm:12px; --r-md:16px; --r-lg:20px; --r-xl:24px; --r-pill:999px;
+  --sh-sm:0 1px 2px rgba(20,18,12,.05);
+  --sh-md:0 14px 40px -18px rgba(20,18,12,.18), 0 4px 12px -6px rgba(20,18,12,.08);
+  --sh-lg:0 30px 80px -30px rgba(20,18,12,.28);
+  --settle:cubic-bezier(.2,.8,.2,1);
+  --ff:"Google Sans","Noto Sans SC",-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;
+  --serif:"Google Sans","Noto Sans SC",-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif; /* unified: was Instrument Serif */
+  --maxw:1200px; --pad:24px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html{scroll-behavior:smooth;}
+body{margin:0;font-family:var(--ff);color:var(--ink);background:var(--bg);line-height:1.6;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;font-size:15px;overflow-x:hidden;}
+h1,h2,h3,h4{margin:0;font-weight:400;letter-spacing:-.01em;line-height:1.14;}
+p{margin:0;}
+a{color:inherit;text-decoration:none;}
+img{max-width:100%;display:block;}
+::selection{background:#EAEFE0;color:var(--pine);}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 var(--pad);}
+/* framed page: faint vertical hairlines like the reference */
+.frame{position:relative;}
+.frame::before,.frame::after{content:"";position:fixed;top:0;bottom:0;width:1px;background:var(--line);opacity:.7;z-index:0;pointer-events:none;}
+.frame::before{left:max(12px,calc(50% - var(--maxw)/2));}
+.frame::after{right:max(12px,calc(50% - var(--maxw)/2));}
+main{position:relative;z-index:1;}
+
+/* ============ i18n ============ */
+html[data-lang="zh"] .en{display:none;}
+html[data-lang="en"] .zh{display:none;}
+
+/* ============ chip eyebrow ============ */
+.chip{display:inline-flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--line2);
+  border-radius:var(--r-pill);padding:6px 14px;font-size:11px;font-weight:500;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--muted);box-shadow:var(--sh-sm);}
+.hero-eyebrow .chip{font-size:13.5px;padding:9px 20px;color:var(--ink2);letter-spacing:.06em;}
+
+/* ============ buttons ============ */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:var(--ff);
+  font-size:14px;font-weight:500;border:0;cursor:pointer;border-radius:var(--r-pill);
+  padding:12px 22px;transition:transform .25s var(--settle),box-shadow .25s var(--settle),background .2s,opacity .2s;white-space:nowrap;}
+.btn-black{background:var(--black);color:#fff;box-shadow:0 10px 24px -12px rgba(15,15,14,.5);}
+.btn-black:hover{background:var(--black-hover);transform:translateY(-1px);}
+.btn-ghost{background:#fff;color:var(--ink);box-shadow:inset 0 0 0 1px var(--line2);}
+.btn-ghost:hover{box-shadow:inset 0 0 0 1px var(--faint);transform:translateY(-1px);}
+.btn-icon{width:17px;height:17px;display:block;object-fit:contain;flex:none;transition:transform .25s var(--settle);}
+.btn:hover .btn-icon.is-arrow{transform:translateX(3px);}
+.btn-black .btn-icon{filter:brightness(0) invert(1);}
+/* ===== rolling-text hover: label slides up, an identical copy rolls in (nav links + every button) ===== */
+.roll{position:relative;display:inline-block;overflow:hidden;vertical-align:middle;}
+.roll .rl{display:block;transition:transform .5s cubic-bezier(.76,0,.24,1);}
+.roll .rl.dup{position:absolute;left:0;top:0;width:100%;transform:translateY(105%);}
+.hoverroll:hover .roll .rl.orig{transform:translateY(-105%);}
+.hoverroll:hover .roll .rl.dup{transform:translateY(0);}
+.nav-links a.hoverroll{display:inline-flex;align-items:center;}
+@media(prefers-reduced-motion:reduce){.roll .rl{transition:none;}.hoverroll:hover .roll .rl.orig,.hoverroll:hover .roll .rl.dup{transform:none;}}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--sage);outline-offset:2px;}
+
+/* ============ nav ============ */
+.nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.85);backdrop-filter:blur(12px) saturate(140%);
+  -webkit-backdrop-filter:blur(12px) saturate(140%);border-bottom:1px solid var(--line);transition:transform .35s var(--settle);}
+.nav.nav--hide{transform:translateY(-100%);}
+.nav-in{display:flex;align-items:center;gap:16px;height:64px;position:relative;}
+.brand{display:flex;align-items:center;gap:9px;}
+.brand img.lockup{height:26px;width:auto;}
+.brand .nm{font-weight:700;font-size:17px;letter-spacing:-.01em;}
+.brand .nm small{display:block;font-size:8.5px;font-weight:500;letter-spacing:.22em;color:var(--faint);line-height:1;margin-top:1px;}
+.nav-links{display:flex;align-items:center;gap:2px;position:absolute;left:50%;transform:translateX(-50%);}
+.nav-links a{font-size:13.5px;font-weight:500;color:var(--ink2);padding:8px 13px;border-radius:var(--r-pill);transition:.2s;}
+.nav-links a:hover{background:#F1EFEC;color:var(--ink);}
+.langtoggle{display:inline-flex;align-items:center;background:#F3F1EE;border:1px solid var(--line);border-radius:var(--r-pill);padding:2px;margin-left:auto;}
+.langtoggle button{border:0;background:none;cursor:pointer;font-family:var(--ff);font-weight:500;font-size:12px;
+  color:var(--muted);padding:5px 10px;border-radius:var(--r-pill);transition:.2s;line-height:1;}
+.langtoggle button.on{background:var(--black);color:#fff;}
+.burger{display:none;background:none;border:0;color:var(--ink);cursor:pointer;padding:6px;}
+.burger svg,.burger img{width:24px;height:24px;display:block;}
+
+/* ============ flowing light background — light green + hint of blue, 流光 ============ */
+.hero-media,.bart,.caro,.band,.film{position:relative;overflow:hidden;
+  background:linear-gradient(160deg,#F5FAEF 0%,#EDF5F1 48%,#E7F1FA 100%) !important;}
+.hero-media::before,.bart::before,.caro::before,.band::before,.film::before{
+  content:"";position:absolute;width:74%;padding-top:74%;left:-16%;top:-28%;border-radius:50%;pointer-events:none;z-index:0;
+  filter:blur(50px);background:radial-gradient(circle,rgba(210,236,164,.85),transparent 66%);
+  animation:bgdrift1 13s ease-in-out infinite alternate;}
+.hero-media::after,.bart::after,.caro::after,.band::after,.film::after{
+  content:"";position:absolute;width:66%;padding-top:66%;right:-14%;bottom:-24%;border-radius:50%;pointer-events:none;z-index:0;
+  filter:blur(56px);background:radial-gradient(circle,rgba(146,194,240,.6),transparent 66%);
+  animation:bgdrift2 16s ease-in-out infinite alternate;}
+.hero-media>*,.bart>*,.caro>*,.band>*,.film>*{position:relative;z-index:1;}
+.hero-media #hmFx{position:absolute;inset:0;z-index:0;pointer-events:none;}
+.hero-media::before,.hero-media::after{content:none;}
+@keyframes bgdrift1{0%{transform:translate(0,0) scale(1)}100%{transform:translate(14%,-16%) scale(1.16)}}
+@keyframes bgdrift2{0%{transform:translate(0,0) scale(1)}100%{transform:translate(-12%,-18%) scale(1.12)}}
+@keyframes auroraDrift{0%{transform:translate(0,0) scale(1)}100%{transform:translate(-3%,2%) scale(1.09)}}
+@media(prefers-reduced-motion:reduce){
+  .hero-media::before,.hero-media::after,.bart::before,.bart::after,.caro::before,.caro::after,
+  .band::before,.band::after,.film::before,.film::after,.hero::before{animation:none !important;}
+}
+
+/* ============ flow → action diagram (files → glowing turtle → bargaining report) ============ */
+.flow2{display:flex;align-items:center;gap:6px;width:100%;position:relative;}
+.ff-col{display:flex;flex-direction:column;gap:11px;flex:none;z-index:2;}
+.ff{width:50px;height:56px;background:#fff;border-radius:12px;box-shadow:0 5px 16px rgba(30,36,22,.12);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;}
+.ff svg{height:42px;width:auto;display:block;}
+
+.ff-mid{position:relative;flex:1;align-self:stretch;min-width:56px;}
+.ff-links{position:absolute;inset:0;width:100%;height:100%;overflow:visible;}
+.ff-links path{fill:none;stroke:#BFD3B6;stroke-width:1.4;stroke-linecap:round;stroke-dasharray:4 7;
+  animation:flowdash 1.15s linear infinite;}
+@keyframes flowdash{to{stroke-dashoffset:-22;}}
+.ff-turtle{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:64px;height:64px;z-index:2;}
+.ff-turtle img{width:100%;height:100%;position:relative;z-index:1;filter:drop-shadow(0 4px 12px rgba(20,18,12,.18));}
+.ff-turtle::before{content:"";position:absolute;inset:-32%;border-radius:50%;z-index:0;
+  background:radial-gradient(circle,rgba(112,190,120,.6),transparent 66%);filter:blur(9px);
+  animation:tglow 2.6s ease-in-out infinite;}
+@keyframes tglow{0%,100%{opacity:.45;transform:scale(.9)}50%{opacity:1;transform:scale(1.1)}}
+.ff-report{flex:none;width:min(376px,70%);background:#fff;border-radius:16px;box-shadow:var(--sh-lg);
+  padding:12px 16px 16px;color:#140001;z-index:2;}
+.ff-offer-head{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.ff-offer-ico{width:36px;height:36px;border-radius:10px;background:#FEF2F2;display:grid;place-items:center;flex:none;}
+.ff-trend{position:relative;width:20px;height:20px;transform:scaleY(-1);}
+.ff-trend img{position:absolute;display:block;}
+.ff-trend img:first-child{width:18.333px;height:10px;left:.835px;top:5px;}
+.ff-trend img:last-child{width:6.667px;height:6.667px;left:12.5px;top:5px;}
+.ff-offer-copy{min-width:0;display:flex;flex-direction:column;gap:2px;}
+.ff-offer-title{display:flex;align-items:center;gap:12px;font-size:17px;line-height:1.4;font-weight:600;letter-spacing:.2px;white-space:nowrap;}
+.ff-offer-title img{width:6px;height:6px;flex:none;}
+.ff-offer-title .risk{color:#F14437;}
+.ff-offer-copy p{margin:0;color:#878787;font-size:14px;line-height:1.4;font-weight:500;letter-spacing:.2px;}
+.ff-price-card{border-radius:16px;background:#fff;overflow:hidden;}
+.ff-price-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 0;border-bottom:1px solid #F0F0F0;}
+.ff-price-row:last-child{border-bottom:0;}
+.ff-price-key{display:flex;align-items:center;gap:12px;min-width:0;}
+.ff-price-key b{font-size:17px;line-height:1.4;font-weight:600;letter-spacing:.2px;}
+.ff-price-icon{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;flex:none;}
+.ff-price-icon img{width:20px;height:20px;display:block;}
+.ff-price-icon.neutral{background:#F7F7F7;}
+.ff-price-icon.amber{background:#FEF5E5;}
+.ff-price-icon.green{background:#EEF7EF;}
+.ff-price-icon.red{background:#FFF2F2;}
+.ff-price-val{text-align:right;font-size:17px;line-height:1.4;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap;}
+.ff-price-val small{display:block;margin-top:2px;font-size:15px;line-height:1.4;font-weight:500;color:#808080;white-space:normal;}
+.ff-price-row.amber .ff-price-val{color:#F17105;}
+.ff-price-row.green .ff-price-val{color:#2BA245;}
+.ff-price-row.red .ff-price-val,.ff-price-row.red .ff-price-val small{color:#EB4436;}
+.ff-reco{margin-top:12px;background:#F5FAE7;border-left:4px solid #7D8A6E;border-radius:8px;padding:11px 12px 12px 16px;
+  font-size:17px;line-height:1.4;font-weight:400;letter-spacing:.2px;color:#1D1D1F;}
+@media(max-width:560px){
+  .flow2{display:grid;grid-template-columns:42px minmax(0,1fr);gap:10px;}
+  .ff{width:42px;height:48px}.ff svg{height:36px;width:auto}.ff-turtle{width:52px;height:52px}
+  .ff-col{grid-column:1;grid-row:1}.ff-mid{grid-column:2;grid-row:1;min-height:230px}
+  .ff-report{grid-column:1/-1;grid-row:2;width:100%;margin-top:4px;}
+}
+
+/* ============ hero ============ */
+.hero{padding:88px 0 40px;text-align:center;position:relative;overflow:hidden;background:#fff;}
+#heroFx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1;}
+.hero .wrap{position:relative;z-index:2;}
+.hero h1{font-size:clamp(38px,5vw,58px);letter-spacing:-.015em;line-height:1.1;}
+.hero-sub{max-width:560px;margin:22px auto 0;color:var(--ink2);font-size:15.5px;line-height:1.75;}
+.hero-ticks{display:flex;align-items:center;justify-content:center;gap:26px;margin-top:26px;flex-wrap:wrap;}
+.hero-ticks span{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--ink2);}
+.hero-ticks .ic{width:17px;height:17px;}
+.hero-cta{display:flex;justify-content:center;gap:12px;margin-top:30px;flex-wrap:wrap;}
+.hero-cta .btn{flex:1 1 0;min-width:210px;max-width:256px;justify-content:center;}
+#film{scroll-margin-top:72px;}
+/* hero media */
+.hero-media{margin-top:56px;position:relative;border-radius:var(--r-xl);overflow:hidden;box-shadow:var(--sh-md);
+  background-image:linear-gradient(115deg,#A6C9E8 0%,#BCDCC6 48%,#F0CBA2 100%),url("assets/field.png");background-position:center 70%;background-size:cover;background-repeat:no-repeat;background-blend-mode:color;min-height:540px;padding:78px 24px;
+  display:flex;align-items:center;justify-content:center;}
+.chatcard{background:#fff;border-radius:18px;box-shadow:var(--sh-lg);width:min(420px,86%);height:520px;overflow:hidden;text-align:left;display:flex;flex-direction:column;}
+.chatcard .hd{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--line);}
+.chatcard .hd img{width:34px;height:34px;}
+.chatcard .hd .t{font-size:14px;font-weight:700;}
+.chatcard .hd .s{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:5px;}
+.chatcard .hd .s i{width:6px;height:6px;border-radius:50%;background:var(--save);display:inline-block;}
+.chatcard .bd{padding:18px 16px 14px;min-height:0;flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:10px;scrollbar-width:thin;scrollbar-color:#DCDCD8 transparent;}
+.chatcard .bd::-webkit-scrollbar{width:4px}.chatcard .bd::-webkit-scrollbar-thumb{background:#DCDCD8;border-radius:99px;}
+.msg{max-width:85%;font-size:12.5px;line-height:1.6;padding:9px 12px;border-radius:12px;}
+.msg.user{align-self:flex-end;background:#FCFCFC;border:1px solid #E0E0E0;border-radius:14px;color:#140001;padding:11px 15px;}
+.msg.ufile{align-self:flex-end;display:inline-flex;align-items:center;gap:10px;background:#FCFCFC;border:1px solid #E0E0E0;border-radius:14px 14px 5px 14px;padding:10px 14px;}
+.msg.ufile svg{height:30px;width:auto;flex:none;display:block;}
+.msg.ufile .fm2{display:flex;flex-direction:column;gap:2px;line-height:1.25;}
+.msg.ufile .fm2 b{font-size:12px;font-weight:700;color:var(--ink);}
+.msg.ufile .fm2 small{font-size:10.5px;color:var(--muted);}
+.msg.ai{align-self:flex-start;background:none;border-radius:0;padding:3px 0;color:var(--ink);max-width:96%;}
+.msg.agentcard{align-self:flex-start;background:none;border:0;border-radius:0;max-width:100%;padding:2px 0 0;width:100%;}
+.at{display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;}
+.at .spark{width:19px;height:19px;flex:none;}
+.at .ttl{font-size:13.5px;font-weight:500;letter-spacing:.01em;
+  background:linear-gradient(90deg,#51A1FF 0%,#6160FF 40%,#8ec1ff 50%,#51A1FF 60%,#6160FF 100%);
+  background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;}
+.agentcard.working .at .ttl{animation:shim 1.7s linear infinite;}
+@keyframes shim{to{background-position:-220% 0;}}
+.at .chev{width:13px;height:13px;margin-left:auto;opacity:.62;flex:none;transition:transform .28s var(--settle);}
+.agentcard.collapsed .at .chev{transform:rotate(-90deg);}
+.agentcard.collapsed .abody{display:none;}
+.at:focus-visible,.pr-head:focus-visible,.qfig-head:focus-visible,.qplan-head:focus-visible{outline:2px solid #7D8A6E;outline-offset:-2px;}
+.at .ttl .fin{display:none;}
+.agentcard.done .at .ttl .live{display:none;}
+.agentcard.done .at .ttl .fin{display:inline;}
+.agentcard.done .at .ttl{animation:none;background:none;-webkit-text-fill-color:var(--muted);color:var(--muted);}
+.abody{background:#FCFCFC;border-left:4px solid #E0E0E0;border-radius:7px;padding:10px 12px;margin-top:9px;display:flex;flex-direction:column;gap:8px;}
+.arow{display:flex;gap:7px;align-items:flex-start;font-size:12px;color:#878787;min-height:16px;line-height:1.35;}
+.arow svg,.arow img{width:15px;height:15px;flex:none;stroke:#9a9a9a;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+html.js-anim .arow,html.gsap-on .arow{display:none;}
+html.js-anim .arow.on,html.gsap-on .arow.on{display:flex;}
+.agentcard.done .at{display:none;}
+.agentcard .pr{margin-top:0;border:1px solid #E0E0E0;border-radius:14px;background:#fff;overflow:hidden;color:#140001;width:100%;}
+.pr-head{height:53px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #E0E0E0;background:#fff;cursor:pointer;user-select:none;transition:background .18s ease;}
+.pr-head:hover{background:#FCFCFC;}
+.pr-head-main{display:flex;align-items:center;gap:8px;min-width:0;overflow:hidden;}
+.pr-head-icon{width:28px;height:28px;border-radius:99px;background:#E9F0D6;display:flex;align-items:center;justify-content:center;flex:none;}
+.pr-head-icon img{width:18px;height:18px;display:block;}
+.pr-head b{font-size:17px;line-height:1.4;letter-spacing:.2px;font-weight:700;white-space:nowrap;}
+.pr-head-info{width:18px;height:18px;display:block;flex:none;}
+.pr-head-caret{width:20px;height:20px;border-radius:4px;background:#F4F4F4;padding:4px;display:flex;align-items:center;justify-content:center;transform:scaleY(-1);flex:none;transition:transform .24s var(--settle);}
+.pr-head-caret img{width:12px;height:12px;display:block;}
+.pr-body{padding:16px;display:flex;flex-direction:column;gap:16px;background:#fff;}
+.pr.is-collapsed .pr-head{border-bottom-color:transparent;}
+.pr.is-collapsed .pr-head-caret{transform:none;}
+.pr.is-collapsed .pr-body{display:none;}
+.pr-lead{margin:0;color:#383838;font-size:17px;line-height:1.4;letter-spacing:.2px;overflow-wrap:anywhere;}
+.pr-costs{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px 0 12px;}
+.pr-cost{padding:12px;border-radius:12px;min-width:0;min-height:112px;display:flex;flex-direction:column;gap:4px;overflow:hidden;}
+.pr-cost.cost{background:#F2FFF8;color:#28593F;}.pr-cost.profit{background:#FFFAEC;color:#F3AF00;}
+.pr-cost small{display:block;font-size:15px;line-height:1.4;letter-spacing:.2px;font-weight:700;}
+.pr-cost b{display:block;font-size:22px;line-height:1.48;color:inherit;font-variant-numeric:tabular-nums;overflow-wrap:anywhere;}
+.pr-cost i{display:block;font-style:normal;color:#383838;font-size:10px;line-height:1.25;letter-spacing:.2px;}
+.pr-pricebar{position:relative;height:47px;}
+.pr-priceflag{position:absolute;right:0;top:0;padding:4px 8px;border-radius:8px;background:#FEF2F2;color:#F14437;font-size:13px;line-height:16.5px;font-weight:700;white-space:nowrap;}
+.pr-track{position:absolute;left:0;right:0;bottom:0;height:6px;display:grid;grid-template-columns:repeat(3,1fr);gap:2px;}
+.pr-track i{border-radius:99px;}.pr-track i:nth-child(1){background:#188038}.pr-track i:nth-child(2){background:#FFB800}.pr-track i:nth-child(3){background:#F14437}
+.pr-marker{position:absolute;right:14.5%;bottom:-4px;width:14px;height:14px;border:3px solid #F14437;background:#fff;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,.1);}
+.pr-legend{display:flex;align-items:center;gap:14px;flex-wrap:wrap;color:#383838;font-size:13px;letter-spacing:.2px;}
+.pr-legend span{display:flex;align-items:center;gap:5px;white-space:nowrap;}.pr-legend i{width:9px;height:9px;border-radius:2px;display:block;}
+/* The result card lives inside the chat: keep its type scale aligned with the
+   12.5px conversation copy instead of reusing the full report's 17–22px scale. */
+#agentCard .pr-head{height:42px;padding:9px 11px;}
+#agentCard .pr-head-main{gap:6px;}
+#agentCard .pr-head-icon{width:22px;height:22px;}
+#agentCard .pr-head-icon img{width:14px;height:14px;}
+#agentCard .pr-head b{font-size:13px;line-height:1.45;letter-spacing:0;}
+#agentCard .pr-head-info{width:14px;height:14px;}
+#agentCard .pr-head-caret{width:17px;height:17px;padding:3px;}
+#agentCard .pr-head-caret img{width:10px;height:10px;}
+#agentCard .pr-body{padding:11px;gap:10px;}
+#agentCard .pr-lead{font-size:12.5px;line-height:1.6;letter-spacing:0;}
+#agentCard .pr-costs{gap:7px;padding:4px 0 6px;}
+#agentCard .pr-cost{padding:9px;border-radius:9px;min-height:82px;gap:2px;}
+#agentCard .pr-cost small{font-size:11px;line-height:1.45;letter-spacing:0;}
+#agentCard .pr-cost b{font-size:16px;line-height:1.4;}
+#agentCard .pr-cost i{font-size:9px;line-height:1.3;letter-spacing:0;}
+#agentCard .pr-pricebar{height:34px;}
+#agentCard .pr-priceflag{padding:3px 6px;border-radius:6px;font-size:10px;line-height:13px;}
+#agentCard .pr-track{height:4px;}
+#agentCard .pr-marker{bottom:-3px;width:10px;height:10px;border-width:2px;}
+#agentCard .pr-legend{gap:10px;font-size:10px;letter-spacing:0;}
+#agentCard .pr-legend span{gap:4px;}
+#agentCard .pr-legend i{width:7px;height:7px;}
+html.js-anim .agentcard .pr,html.gsap-on .agentcard .pr{display:none;}
+html.js-anim .agentcard .pr.on,html.gsap-on .agentcard .pr.on{display:block;animation:rise .45s var(--settle);}
+/* user typing happens in the input field; send button pulses on submit */
+.chatcard .inp .ph.typingtext{color:var(--ink);}
+.chatcard .inp .send.pulse{animation:sendp .3s var(--settle);}
+@keyframes sendp{50%{transform:scale(1.22)}}
+.msg.ai b{color:var(--save);}
+.chatcard .inp{margin:0 12px 12px;display:flex;align-items:center;gap:10px;border:1px solid var(--line2);
+  border-radius:var(--r-pill);padding:8px 8px 8px 16px;}
+.chatcard .inp .up{width:19px;height:19px;flex:none;color:var(--muted);}
+.chatcard .inp .up img{width:19px;height:19px;display:block;opacity:.72;}
+.chatcard .inp .ph{flex:1;font-size:13px;color:var(--muted);}
+.chatcard .inp .send{width:34px;height:34px;border-radius:50%;background:var(--black);color:#fff;display:flex;
+  align-items:center;justify-content:center;flex:none;}
+.chatcard .inp .send img{width:16px;height:16px;display:block;filter:brightness(0) invert(1);}
+.hero-chip{position:absolute;right:26px;bottom:24px;background:rgba(255,255,255,.55);backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.6);border-radius:14px;padding:10px 16px;text-align:left;}
+.hero-chip .k{font-size:11px;color:var(--ink2);font-weight:600;}
+.hero-chip .v{font-size:20px;font-weight:700;letter-spacing:-.01em;}
+.hero-chip .v small{font-size:11px;color:var(--save);font-weight:500;margin-left:6px;}
+
+/* ============ section scaffolding ============ */
+.section{padding:110px 0;}
+.sec-head{max-width:640px;margin:0 auto 54px;text-align:center;}
+.sec-head.left{margin:0 0 44px;text-align:left;}
+.sec-head h2{font-size:clamp(30px,3.4vw,44px);letter-spacing:-.012em;margin-top:0;text-wrap:balance;}
+.sec-head p{color:var(--muted);font-size:15px;margin-top:16px;line-height:1.75;}
+/* word-fade reveal for big headlines */
+.wfade .w{opacity:.16;transition:opacity .5s var(--settle);}
+.wfade.in .w{opacity:1;}
+
+/* ============ problem tiles ============ */
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.tile{display:flex;flex-direction:column;gap:0;}
+.tile .art{border-radius:var(--r-lg);min-height:250px;display:flex;align-items:center;justify-content:center;
+  padding:26px;position:relative;overflow:hidden;}
+.tile.a .art{background:linear-gradient(160deg,#EAF3FB 0%,#D8E9F6 100%);}
+.tile.b .art{background:linear-gradient(160deg,#FBF3E7 0%,#F6E4CB 100%);}
+
+.tile h3{font-size:17px;font-weight:700;margin-top:18px;}
+.tile>p{color:var(--muted);font-size:13.5px;margin-top:7px;line-height:1.7;max-width:34ch;}
+.mini{background:#fff;border-radius:14px;box-shadow:var(--sh-md);padding:14px;width:min(300px,100%);font-size:12px;}
+.mini .row{display:flex;justify-content:space-between;align-items:center;padding:7px 2px;border-bottom:1px solid var(--line);}
+.mini .row:last-child{border-bottom:0;}
+.mini .row .l{color:var(--ink2);}
+.mini .row .r{font-weight:700;font-variant-numeric:tabular-nums;}
+.mini .row .r.q{color:var(--warn);}
+.mini .row .r.hid{color:var(--danger);}
+.mini .bub{background:none;padding:7px 0 0;color:var(--ink2);}
+.mini .bub.me{background:#FCFCFC;border:1px solid #E0E0E0;border-radius:12px;padding:8px 11px;color:#140001;}
+.mini .cap{font-size:10.5px;color:var(--faint);margin-top:8px;}
+
+/* ============ capabilities band ============ */
+.band{background:
+  radial-gradient(900px 420px at 15% 0%,rgba(255,255,255,.85),transparent 60%),
+  radial-gradient(700px 420px at 90% 100%,rgba(219,238,172,.28),transparent 60%),
+  linear-gradient(120deg,#F0EEE5 0%,#E8E6DA 52%,#F3F1E9 100%);
+  border-radius:var(--r-xl);padding:80px 40px;}
+.tabs{position:relative;display:inline-flex;background:rgba(255,255,255,.5);backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,.6);border-radius:var(--r-pill);padding:4px;gap:0;margin-top:8px;
+  box-shadow:inset 0 0 0 1px rgba(26,26,26,.03);}
+.tabs .tab-hl{position:absolute;top:4px;bottom:4px;left:4px;width:0;border-radius:var(--r-pill);z-index:0;
+  background:#fff;box-shadow:0 1px 5px rgba(0,0,0,.08),0 0 0 1px rgba(26,26,26,.05);
+  transition:left .38s var(--settle),width .38s var(--settle);}
+.tabs button{position:relative;z-index:1;border:0;background:none;cursor:pointer;font-family:var(--ff);
+  font-size:13.5px;font-weight:500;color:var(--muted);padding:9px 20px;border-radius:var(--r-pill);
+  transition:color .28s var(--settle);white-space:nowrap;}
+.tabs button.on{color:var(--ink);font-weight:600;}
+.cap-caption{max-width:480px;margin:20px auto 30px;text-align:center;color:var(--ink2);font-size:14px;line-height:1.7;}
+.cap-stage{display:flex;justify-content:center;}
+.cap-panel{display:none;}
+.cap-panel.on{display:block;animation:rise .5s var(--settle);}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.capcard{position:relative;background:#fff;border-radius:18px;padding:22px;width:min(480px,92vw);font-size:13px;
+  transition:transform .38s var(--settle),box-shadow .38s var(--settle);
+  box-shadow:0 24px 50px -28px rgba(30,36,22,.22),
+    7px 9px 0 0 #fff,7px 9px 0 1px var(--line),
+    14px 18px 0 0 #fff,14px 18px 0 1px var(--line);}
+.capcard:hover{transform:translateY(-6px);
+  box-shadow:0 38px 68px -30px rgba(30,36,22,.4),
+    7px 9px 0 0 #fff,7px 9px 0 1px var(--line),
+    14px 18px 0 0 #fff,14px 18px 0 1px var(--line);}
+@media(prefers-reduced-motion:reduce){.capcard{transition:none;}.capcard:hover{transform:none;}}
+.capcard .h{display:flex;align-items:center;gap:9px;font-weight:700;font-size:14px;padding-bottom:12px;border-bottom:1px solid var(--line);}
+.capcard .h img{width:26px;height:26px;}
+.capcard .h .tag{margin-left:auto;font-size:11px;font-weight:500;color:var(--muted);background:#F3F1EE;padding:4px 10px;border-radius:var(--r-pill);}
+.ladder{display:flex;flex-direction:column;}
+.ladder .lrow{display:flex;justify-content:space-between;align-items:baseline;padding:11px 2px;border-bottom:1px solid var(--line);}
+.ladder .lrow:last-child{border-bottom:0;}
+.ladder .lk{color:var(--ink2);font-size:13px;display:flex;align-items:center;gap:8px;}
+.ladder .lk i{width:8px;height:8px;border-radius:50%;display:inline-block;}
+.ladder .lv{font-family:var(--serif);font-size:22px;letter-spacing:.01em;}
+.ladder .note{font-size:11.5px;color:var(--muted);background:#FAF9F7;border-radius:10px;padding:10px 12px;margin-top:12px;line-height:1.6;border-left:2px solid var(--sage);}
+.script .q{font-size:13px;color:var(--ink2);line-height:1.7;padding:12px 2px;}
+.script .why{background:var(--save-soft);border-left:2px solid var(--save);border-radius:10px;padding:12px 14px;margin-top:4px;}
+.script .why b{display:block;color:#1D4A33;font-size:13px;margin-bottom:6px;}
+.script .why li{font-size:12px;color:#2C5940;margin-left:16px;line-height:1.7;}
+.script .cap-copybtn{margin:16px 0 0;width:100%;padding:10px 14px;font-size:14px;min-height:46px;}
+.script .cap-copybtn .ic,.script .cap-copybtn .ic img{width:20px;height:20px;}
+.script .cap-copybtn.is-copied .ic img{width:16px;height:16px;}
+.parse .file{display:flex;align-items:center;gap:10px;padding:12px 2px;}
+.parse .fic{flex:none;display:flex;align-items:center;}
+.parse .fic svg{height:36px;width:auto;display:block;}
+.parse .fn{font-size:13px;font-weight:700;}
+.parse .fm{font-size:11.5px;color:var(--muted);margin-top:2px;}
+.parse .ok{margin-left:auto;color:var(--save);font-size:12px;font-weight:500;}
+.parse .bar{height:6px;border-radius:3px;background:#F1EFEC;overflow:hidden;margin:6px 0 10px;}
+.parse .bar i{display:block;height:100%;width:86%;background:var(--sage);border-radius:3px;}
+.tl{display:flex;gap:8px;flex-wrap:wrap;padding-top:14px;}
+.tl>span{font-size:12px;color:var(--ink2);background:#F7F6F3;border:1px solid var(--line);padding:7px 13px;border-radius:var(--r-pill);display:inline-flex;gap:6px;align-items:center;}
+.tl>span.done{background:var(--save-soft);border-color:#D8EEDF;color:#1D4A33;}
+
+
+/* ============ quote before/after comparison ============ */
+.qcmp{--mono:ui-monospace,"SF Mono","Menlo",monospace;border:1px solid var(--line);border-radius:var(--r-xl);
+  background:#fff;overflow:hidden;box-shadow:var(--sh-md);margin-bottom:180px;}
+.qcmp-head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 22px;border-bottom:1px solid var(--line);flex-wrap:wrap;}
+.qcmp-head .ttl{display:flex;align-items:center;gap:9px;font-weight:700;font-size:15px;letter-spacing:-.01em;}
+.qcmp-head .ttl img{width:22px;height:22px;flex:none;}
+.qcmp-body{display:grid;grid-template-columns:repeat(3,1fr);}
+.qcp{padding:22px;border-right:1px solid #ECEDE8;min-width:0;background:#fff;}
+.qcp:last-child{border-right:0;}
+.qcp-h{display:flex;align-items:center;gap:8px;margin-bottom:15px;}
+.qcp-h i{width:24px;height:24px;border-radius:50%;background:#EFF9F2;color:#1F8F52;font-style:normal;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none;}
+.qcp-h b{font-size:15px;color:#140001;}
+.qcp-file{display:flex;align-items:center;gap:10px;padding:13px 14px;background:#FCFCFB;border:1px solid #E0E0E0;border-radius:14px;min-height:70px;}
+.qcp-file svg{height:34px;width:auto;flex:none;}
+.qcp-file b{display:block;font-size:14px;color:#140001;}
+.qcp-file small{font-size:11.5px;color:#878787;}
+.qcp-file .ok{margin-left:auto;font-size:12px;color:#1F8F52;font-weight:600;white-space:nowrap;}
+.qcp-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px;}
+.qcp-stats>div{background:#F9F9F8;border:1px solid #E0E0E0;border-radius:12px;padding:10px 6px;text-align:center;}
+.qcp-stats small{display:flex;align-items:center;justify-content:center;gap:4px;font-size:11px;color:#878787;margin-bottom:5px;}
+.qcp-stats b{font-size:14.5px;color:#140001;font-variant-numeric:tabular-nums;}
+.qcp-sicon{width:12px;height:12px;display:block;object-fit:contain;flex:none;}
+.qcp-sub{font-size:12px;color:#878787;margin:12px 1px 7px;}
+.qcp-pills{display:flex;gap:5px;flex-wrap:wrap;}
+.qcp-pills>span{background:#F9F9F8;border:1px solid #E0E0E0;border-radius:8px;padding:5px 10px;font-size:12px;color:#383838;}
+.qcp-lead{font-size:14px;font-weight:600;color:#140001;margin:0 0 12px;}
+.qcp-cost{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.qcp-cost>div{border-radius:12px;padding:12px;border:1px solid #E0E0E0;min-width:0;}
+.qcp-cost .cost{background:#F2FFF8;border-color:#DCEFE0;}
+.qcp-cost .cost b{color:#188038;}
+.qcp-cost .prof{background:#FFFAEC;border-color:#F4E8C8;}
+.qcp-cost .prof b{color:#B47B00;}
+.qcp-cost small{display:flex;align-items:center;gap:5px;font-size:11px;color:#878787;margin-bottom:4px;}
+.qcp-cost b{font-size:15px;font-variant-numeric:tabular-nums;letter-spacing:-.01em;white-space:nowrap;}
+.qcp-cost i{display:block;font-style:normal;font-size:10px;color:#878787;margin-top:5px;line-height:1.5;}
+.qcp-barw{position:relative;margin:26px 1px 7px;}
+.qcp-bar{height:9px;border-radius:5px;overflow:hidden;display:flex;}
+.qcp-bar i{display:block;height:100%;}
+.qcp-bar .sa{width:64%;background:#28593F;}
+.qcp-bar .sb{width:17%;background:#9CCB86;}
+.qcp-bar .sc{flex:1;background:#F14437;}
+.qcp-flag{position:absolute;right:0;top:-22px;font-size:10.5px;color:#F14437;font-weight:700;background:#FEF2F2;padding:3px 8px;border-radius:6px;white-space:nowrap;}
+.qcp-legend{display:flex;gap:11px;font-size:10px;color:#878787;flex-wrap:wrap;}
+.qcp-legend i{display:inline-block;width:7px;height:7px;border-radius:2px;margin-right:4px;}
+.qcp-lad .r{display:flex;align-items:center;gap:9px;padding:9px 0;border-bottom:1px solid #E0E0E0;}
+.qcp-lad .r:last-child{border-bottom:0;}
+.qcp-lad .li{width:20px;height:20px;flex:none;}
+.qcp-lad .li svg,.qcp-lad .li img{width:100%;height:100%;display:block;object-fit:contain;}
+.qcp-lad .lk{font-size:13px;color:#383838;}
+.qcp-lad .lk small{display:block;font-size:10.5px;color:#878787;}
+.qcp-lad .lv{margin-left:auto;font-size:14px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap;}
+.qcp-note{font-size:11.5px;color:#383838;line-height:1.6;background:#F2FFF8;border-radius:10px;padding:10px 12px;margin-top:11px;}
+.qcp-note b{color:#188038;}
+/* Figma 10225:205051 + 10225:205129 — exact 376px components, fluid at smaller widths */
+.qcp.qcp-fig{padding:0;overflow:hidden;}
+.qfig-head{height:53px;padding:12px 16px;display:flex;align-items:center;gap:8px;background:#fff;cursor:pointer;user-select:none;transition:background .18s ease;}
+.qfig-head:hover{background:#FAFBF8;}
+.qfig-head .qfig-ico{width:28px;height:28px;border-radius:99px;background:#E9F0D6;display:flex;align-items:center;justify-content:center;flex:none;}
+.qfig-head .qfig-ico img{width:18px;height:18px;display:block;object-fit:contain;}
+.qfig-head b{font-size:17px;line-height:1.4;letter-spacing:.2px;color:#140001;}
+.qfig-head .qfig-info{width:18px;height:18px;display:block;object-fit:contain;}
+.qfig-head .qfig-caret{width:20px;height:20px;margin-left:auto;border-radius:4px;background:#F4F4F4;padding:4px;transform:rotate(180deg);transition:transform .24s var(--settle);}
+.qfig-body{padding:16px;}
+.qfig-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;}
+.qfig-stat{min-height:94px;padding:12px;background:#F9F9F8;border-radius:14px;display:flex;flex-direction:column;align-items:flex-start;min-width:0;}
+.qfig-stat img{display:block;margin-bottom:4px;object-fit:contain;flex:none;}
+.qfig-stat img.stat-file{width:18.18px;height:20px;}
+.qfig-stat img.stat-dollar,.qfig-stat img.stat-target{width:20px;height:20px;}
+.qfig-stat small{font-size:14px;line-height:1.42;letter-spacing:.2px;color:#565656;font-weight:500;min-height:40px;}
+.qfig-stat b{font-size:17px;line-height:1.4;letter-spacing:.2px;color:#140001;margin-top:8px;white-space:nowrap;}
+.qfig-sub{font-size:15px;line-height:1.4;letter-spacing:.2px;color:#878787;margin:16px 0 7px;}
+.qfig-pills{display:flex;flex-wrap:wrap;gap:6px;}
+.qfig-pills span{padding:4px 10px;border-radius:20px;background:#F5FAE7;color:#2F3722;font-size:17px;font-weight:500;line-height:1.4;letter-spacing:.2px;white-space:nowrap;}
+.qfig-lead{font-size:17px;font-weight:400;line-height:1.4;letter-spacing:.2px;color:#383838;margin:0 0 16px;}
+.qfig-costs{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px 0 12px;}
+.qfig-cost{min-height:118px;padding:12px;border-radius:12px;display:flex;flex-direction:column;gap:4px;min-width:0;overflow:hidden;}
+.qfig-cost.cost{background:#F2FFF8;color:#28593F;}
+.qfig-cost.profit{background:#FFFAEC;color:#F3AF00;}
+.qfig-cost small{font-size:15px;line-height:1.4;letter-spacing:.2px;font-weight:700;}
+.qfig-cost b{font-size:22px;line-height:1.48;font-weight:700;letter-spacing:0;font-variant-numeric:tabular-nums;}
+.qfig-cost i{font-style:normal;font-size:10px;line-height:1.25;letter-spacing:.2px;color:#383838;}
+.qfig-pricebar{position:relative;height:47px;margin-top:0;}
+.qfig-track{position:absolute;left:0;right:0;bottom:0;height:6px;display:grid;grid-template-columns:repeat(3,1fr);gap:2px;}
+.qfig-track i{border-radius:99px;}
+.qfig-track i:nth-child(1){background:#188038}.qfig-track i:nth-child(2){background:#FFB800}.qfig-track i:nth-child(3){background:#F14437}
+.qfig-flag{position:absolute;right:0;top:0;padding:4px 8px;border-radius:8px;background:#FEF2F2;color:#F14437;font-size:13px;line-height:16.5px;font-weight:700;white-space:nowrap;}
+.qfig-marker{position:absolute;right:14.5%;bottom:-4px;width:14px;height:14px;border:3px solid #F14437;background:#fff;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,.1);}
+.qfig-legend{display:flex;align-items:center;gap:14px;margin-top:12px;flex-wrap:wrap;color:#383838;font-size:13px;letter-spacing:.2px;}
+.qfig-legend span{display:flex;align-items:center;gap:5px;white-space:nowrap;}
+.qfig-legend i{width:9px;height:9px;border-radius:2px;display:block;}
+/* Figma 10225:205280 — complete price recommendation card */
+.qcp.qcp-plan{padding:0;overflow:hidden;display:flex;flex-direction:column;background:#fff;}
+.qplan-head{height:53px;padding:12px 16px;display:flex;align-items:center;gap:8px;background:#fff;cursor:pointer;user-select:none;transition:background .18s ease;}
+.qplan-head:hover{background:#FAFBF8;}
+.qplan-head .qplan-ico{width:28px;height:28px;border-radius:50%;background:#E9F0D6;display:grid;place-items:center;flex:none;}
+.qplan-head .qplan-ico img{width:12.938px;height:16.314px;display:block;}
+.qplan-head b{font-size:17px;line-height:1.4;letter-spacing:.2px;color:#140001;min-width:0;overflow-wrap:anywhere;}
+.qplan-caret{width:20px;height:20px;margin-left:auto;border-radius:4px;background:#F4F4F4;padding:4px;transform:scaleY(-1);flex:none;transition:transform .24s var(--settle);}
+.qcp.is-collapsed .qfig-head,.qcp.is-collapsed .qplan-head{border-bottom-color:transparent;}
+.qcp.is-collapsed .qfig-caret,.qcp.is-collapsed .qplan-caret{transform:none;}
+.qcp.is-collapsed .qfig-body,.qcp.is-collapsed .qplan-body{display:none;}
+.pr:not(.is-collapsed) .pr-body,.qcp:not(.is-collapsed) .qfig-body,.qcp:not(.is-collapsed) .qplan-body{animation:disclosure-in .22s var(--settle);}
+@keyframes disclosure-in{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:none}}
+.qplan-body{padding:12px 16px 16px;}
+.qplan-body .ff-offer-head{margin-bottom:12px;}
+.qplan-body .ff-price-key{flex:0 0 153px;min-width:0;}
+.qplan-body .ff-price-key b{width:113px;white-space:normal;overflow-wrap:anywhere;}
+.qplan-body .ff-price-val{flex:1;min-width:0;white-space:normal;overflow-wrap:anywhere;}
+.qplan-body .ff-price-val small{width:100%;overflow-wrap:anywhere;}
+.qplan-body .ff-reco{margin-top:12px;}
+@media(max-width:900px){.qcmp-body{grid-template-columns:1fr;}.qcp{border-right:0;border-bottom:1px solid var(--line);}.qcp:last-child{border-bottom:0;}}
+
+/* ============ product bento ============ */
+.bento{display:grid;grid-template-columns:1.05fr .95fr;column-gap:clamp(72px,7vw,104px);row-gap:48px;align-items:center;margin-bottom:180px;}
+.bento:last-child{margin-bottom:0;}
+.bento.flip .btext{order:2;}
+.bart{border-radius:var(--r-lg);min-height:420px;display:flex;align-items:center;justify-content:center;padding:34px;
+  background-image:linear-gradient(115deg,#A6C9E8 0%,#BCDCC6 48%,#F0CBA2 100%),url("assets/field.png");background-position:center;background-size:cover;background-blend-mode:color;overflow:hidden;}
+.btext h3{font-size:clamp(22px,2.2vw,28px);letter-spacing:-.01em;}
+.btext>p{color:var(--muted);font-size:14.5px;margin-top:22px;line-height:1.75;max-width:44ch;}
+.blist{list-style:none;margin:30px 0 0;padding:0;display:flex;flex-direction:column;gap:14px;}
+.blist li{display:flex;gap:10px;font-size:13.5px;color:var(--ink2);align-items:flex-start;}
+.blist .ck{width:17px;height:17px;border-radius:50%;background:var(--save-soft);color:var(--save);display:flex;
+  align-items:center;justify-content:center;flex:none;margin-top:2px;}
+.blist .ck svg{width:10px;height:10px;stroke:currentColor;fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;}
+/* report mock */
+/* ===== 报价体检结果 — real product report (Figma 10118:192882, spec-true) ===== */
+.rpt{box-sizing:border-box;background:#fff;border-radius:20px;box-shadow:var(--sh-lg);width:min(428px,100%);max-width:100%;min-width:0;height:720px;
+  display:flex;flex-direction:column;overflow:hidden;font-size:15px;color:#140001;text-align:left;line-height:1.45;}
+.rpt-top{flex:none;min-height:58px;padding:12px 16px;background:#fff;border-bottom:1px solid #E0E0E0;font-size:17px;font-weight:700;line-height:1.4;display:flex;align-items:center;gap:10px;}
+.rpt-top .rt-menu{font-size:18px;font-weight:400;color:#383838;line-height:1;}
+.rpt-top .rt-menu img{width:18px;height:18px;display:block;}
+.rpt-top .rt-check{width:24px;height:24px;border-radius:50%;background:#E9F0D6;display:flex;align-items:center;justify-content:center;}
+.rpt-top .rt-check img{width:15px;height:15px;display:block;}
+.rpt-top .rt-title{flex:1;}
+.rpt-top .rt-action{width:24px;height:24px;border:0;border-radius:6px;background:#F4F4F4;padding:5px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .18s ease,transform .18s ease;}
+.rpt-top .rt-action:hover{background:#E9F0D6;}.rpt-top .rt-action:active{transform:scale(.92);}.rpt-top .rt-action:focus-visible{outline:2px solid #7D8A6E;outline-offset:2px;}
+.rpt-top .rt-action img{width:14px;height:14px;display:block;}
+.rpt-scroll{flex:1;overflow-y:auto;padding:12px 11px;display:flex;flex-direction:column;align-items:stretch;gap:24px;scrollbar-gutter:stable both-edges;background:#fff;}
+.rpt-scroll>*{flex:0 0 auto;}
+.rpt-scroll::-webkit-scrollbar{width:5px;}
+.rpt-scroll::-webkit-scrollbar-thumb{background:#DCDCD8;border-radius:3px;}
+/* verdict */
+.rpt-verdict{background:#FFF6F7;border-radius:14px;padding:16px;margin-top:0;}
+.rpt-verdict .rv-row{display:flex;gap:14px;align-items:center;}
+.rpt-verdict .rv-row>div{min-width:0;}
+.rpt-verdict .rv-d{width:58px;height:58px;border-radius:16px;background:#F14437;color:#fff;font-size:26px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;flex:none;}
+.rpt-verdict b{font-size:18px;font-weight:700;display:block;line-height:1.2;overflow-wrap:anywhere;}
+.rpt-verdict .rv-tags{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;}
+.rpt-verdict .rv-tags>span{font-size:14px;padding:5px 10px;border-radius:9px;background:#F2F2F2;color:#383838;line-height:1.2;}
+.rpt-verdict .rv-tags>span.hot{background:#FFDFDF;color:#C31313;font-weight:700;}
+.rpt-verdict p{font-size:17px;color:#140001;line-height:1.4;letter-spacing:.2px;margin-top:12px;overflow-wrap:anywhere;word-break:normal;}
+/* section card */
+.rpt-sec{background:#fff;border:1px solid #E0E0E0;border-radius:14px;overflow:hidden;}
+.rpt-sec>header{display:flex;align-items:center;gap:8px;font-size:17px;font-weight:400;padding:12px 16px;border-bottom:1px solid #E0E0E0;cursor:pointer;transition:background .18s ease;}
+.rpt-sec>header:hover{background:#FCFCFC;}
+.rpt-sec>header:focus-visible{outline:2px solid #7D8A6E;outline-offset:-2px;}
+.rpt-sec.is-collapsed>header{border-bottom-color:transparent;}
+.rpt-sec.is-collapsed>header~*{display:none;}
+.rpt-sec.is-collapsed .rpt-chev img{transform:none;}
+.rpt-sec>header b{font-weight:700;min-width:0;overflow-wrap:anywhere;}
+.rpt-icirc{width:28px;height:28px;border-radius:50%;background:#E9F0D6;color:#7D8A6E;display:flex;align-items:center;justify-content:center;flex:none;}
+.rpt-icirc svg,.rpt-icirc img{width:18px;height:18px;display:block;object-fit:contain;}
+.rpt-icirc.is-risk img{width:16px;height:15px;}
+.rpt-icirc.is-price img{width:13px;height:16.31px;}
+.rpt-icirc.is-composite{background:transparent;}
+.rpt-icirc.is-composite img{width:28px;height:28px;}
+.rpt-title-info{width:18px;height:18px;display:block;object-fit:contain;flex:none;}
+.rpt-chev{margin-left:auto;width:20px;height:20px;border-radius:5px;background:#F4F4F4;color:#878787;flex:none;display:flex;align-items:center;justify-content:center;}
+.rpt-chev svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.rpt-chev img{width:12px;height:12px;display:block;object-fit:contain;transform:scaleY(-1);}
+.rpt-bd{padding:16px;}
+/* identified */
+.rpt-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+.rpt-stats>div{background:#F9F9F8;border-radius:14px;padding:12px;min-width:0;overflow:hidden;}
+.rpt-stats small{display:block;font-size:14px;color:#565656;font-weight:500;line-height:1.4;margin-bottom:8px;white-space:normal;overflow-wrap:anywhere;min-height:40px;}
+.rpt-stats small img{width:12px;height:12px;display:inline-block;vertical-align:-1px;margin-right:4px;object-fit:contain;}
+.rpt-stats b{font-size:17px;font-weight:400;font-variant-numeric:tabular-nums;white-space:normal;overflow-wrap:anywhere;}
+.rpt-sub{font-size:15px;color:#878787;margin:16px 1px 7px;}
+.rpt-pills{display:flex;gap:6px;flex-wrap:wrap;}
+.rpt-pills>span{background:#F5FAE7;border-radius:20px;padding:4px 10px;font-size:17px;font-weight:500;color:#2F3722;line-height:1.4;max-width:100%;overflow-wrap:anywhere;}
+/* price compare */
+.rpt-lead{font-size:14.5px;color:#383838;margin:0 0 11px;}
+.rpt-cost2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.rpt-cost2 .c{border-radius:12px;padding:11px 12px;min-width:0;}
+.rpt-cost2 .c small{display:block;font-size:12.5px;margin-bottom:3px;font-weight:600;}
+.rpt-cost2 .c b{font-size:17.5px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.01em;white-space:normal;overflow-wrap:anywhere;}
+.rpt-cost2 .c i{display:block;font-style:normal;font-size:11px;color:#383838;margin-top:3px;overflow-wrap:anywhere;}
+.rpt-cost2 .cost{background:#F2FFF8;color:#28593F;}
+.rpt-cost2 .cost b{color:#28593F;}
+.rpt-cost2 .prof{background:#FFFAEC;color:#F3AF00;}
+.rpt-cost2 .prof b{color:#F3AF00;}
+.rpt-barw{position:relative;margin:40px 0 8px;}
+.rpt-bar{display:flex;gap:2px;}
+.rpt-bar i{display:block;height:6px;flex:1;border-radius:99px;}
+.rpt-bar .sa{background:#188038;}
+.rpt-bar .sb{background:#FFB800;}
+.rpt-bar .sc{background:#F14437;}
+.rpt-dot{position:absolute;left:66%;top:13px;width:11px;height:11px;border-radius:50%;background:#fff;border:3px solid #F14437;
+  box-shadow:0 1px 3px rgba(0,0,0,.12);transform:translateX(-50%);}
+.rpt-flag{position:absolute;left:66%;top:-31px;transform:translateX(-50%);font-size:12px;color:#F14437;font-weight:600;
+  background:#FEF2F2;padding:4px 8px;border-radius:8px;white-space:nowrap;}
+.rpt-legend{display:flex;gap:14px;font-size:12px;color:#383838;margin-top:28px;}
+.rpt-legend i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;}
+/* risks */
+.rpt-risk{padding:12px 14px 0;}
+.rpt-risk .rr-h{display:flex;align-items:center;gap:12px;font-size:17px;font-weight:400;margin-bottom:10px;}
+.rpt-risk .rr-h b{font-weight:400;}
+.rpt-risk .rr-h .tag{font-size:14px;padding:4px 12px;border-radius:10px;font-weight:500;background:#FEF2F2;color:#F14437;}
+.rpt-risk .rr-bx{background:#F5FAE7;border-left:4px solid #DBEEAC;border-radius:10px;padding:11px 13px;}
+.rpt-risk .rr-bx p{font-size:17px;color:#140001;line-height:1.4;letter-spacing:.2px;margin:0 0 8px;}
+.rpt-risk .rr-adv{display:flex;align-items:center;gap:12px;border-top:1px solid #E0E0E0;padding-top:8px;font-size:15px;}
+.rpt-risk .rr-adv .bk{display:inline-flex;align-items:center;gap:5px;color:#7D8A6E;flex:none;}
+.rpt-risk .rr-adv .bk svg{width:11px;height:13px;display:block;fill:currentColor;}
+.rpt-risk .rr-adv em{font-style:normal;color:#2F3722;}
+.rpt-copybtn{display:flex;align-items:center;justify-content:center;gap:12px;margin:14px;
+  background:#fff;border:1px solid #E0E0E0;border-radius:14px;padding:12px 16px;font-family:var(--ff);font-size:17px;font-weight:700;line-height:1.4;letter-spacing:.2px;color:#140001;cursor:pointer;width:calc(100% - 28px);transition:background .18s ease,border-color .18s ease,transform .18s ease;}
+.rpt-copybtn:hover{background:#F5FAE7;border-color:#B9C99C;}.rpt-copybtn:active{transform:scale(.99);}
+.rpt-copybtn .ic{width:24px;height:24px;color:#7D8A6E;display:flex;align-items:center;justify-content:center;}
+.rpt-copybtn .ic svg,.rpt-copybtn .ic img{width:24px;height:24px;display:block;object-fit:contain;transform:scaleY(-1);}
+.rpt-copybtn.is-copied{background:#FCFCFC;color:#7D8A6E;}
+.rpt-copybtn.is-copied .ic img{width:16px;height:16px;transform:none;}
+/* price advice */
+.rpt-adv-h{display:flex;gap:10px;align-items:center;margin-bottom:4px;}
+.rpt-adv-h .aic{width:34px;height:34px;border-radius:10px;background:#FEF2F2;color:#F14437;display:flex;align-items:center;justify-content:center;flex:none;}
+.rpt-adv-h .aic svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+.rpt-adv-h b{font-size:17px;font-weight:400;display:block;}
+.rpt-adv-h small{font-size:14px;color:#878787;font-weight:500;display:block;margin-top:2px;}
+.rpt-lad{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #F0F0F0;}
+.rpt-lad:last-of-type{border-bottom:0;}
+.rpt-lad .li{width:26px;height:26px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;}
+.rpt-lad .li svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;}
+.rpt-lad .li img{width:20px;height:20px;display:block;object-fit:contain;}
+.rpt-lad .lk{font-size:17px;font-weight:600;color:#140001;min-width:0;overflow-wrap:anywhere;}
+.rpt-lad .lr{margin-left:auto;text-align:right;min-width:0;max-width:48%;overflow-wrap:anywhere;}
+.rpt-lad .lv{font-size:17px;font-weight:700;font-variant-numeric:tabular-nums;}
+.rpt-lad .ls{display:block;font-size:15px;color:#808080;font-weight:500;line-height:1.4;margin-top:2px;overflow-wrap:anywhere;}
+.rpt-note{font-size:17px;color:#1D1D1F;line-height:1.4;letter-spacing:.2px;background:#F5FAE7;border-left:4px solid #7D8A6E;border-radius:8px;padding:11px 12px;margin-top:10px;}
+.rpt-note .o{color:#F2914B;font-weight:700;}
+.rpt-note .g{color:#2BA245;font-weight:700;}
+.rpt-note .r{color:#EB4436;font-weight:700;}
+/* script */
+.rpt-quote{display:flex;gap:8px;font-size:17px;color:#140001;line-height:1.4;letter-spacing:.2px;}
+.rpt-quote .qm{color:#7D8A6E;flex:none;margin-top:3px;}
+.rpt-quote .qm svg{width:14px;height:11px;display:block;fill:currentColor;}
+.rpt-why{position:relative;background:#F5FAE7;border-left:4px solid #7D8A6E;border-radius:8px;padding:11px 13px;margin-top:12px;}
+.rpt-why .wt{font-size:17px;color:#28593F;font-weight:600;padding-right:58px;}
+.rpt-why .ws{font-size:16px;color:#878787;margin:5px 0 3px;}
+.rpt-why ul{list-style:none;margin:0;padding:0;}
+.rpt-why li{position:relative;font-size:17px;color:#383838;line-height:1.4;padding:3px 0 3px 14px;}
+.rpt-why li::before{content:"";position:absolute;left:0;top:11px;width:6px;height:6px;border-radius:50%;background:#7D8A6E;}
+.rpt-why .vw{position:absolute;right:12px;top:9px;border:0;background:transparent;padding:4px;font-family:var(--ff);font-size:13px;color:#7D8A6E;font-weight:500;cursor:pointer;border-radius:6px;}
+.rpt-why .vw:hover{background:rgba(125,138,110,.1);}
+.rpt-why .vw:focus-visible{outline:2px solid #7D8A6E;outline-offset:1px;}
+.rpt-why-details{display:grid;grid-template-rows:0fr;opacity:0;transition:grid-template-rows .28s var(--settle),opacity .2s ease;}
+.rpt-why-details>div{overflow:hidden;}
+.rpt-why.is-open .rpt-why-details{grid-template-rows:1fr;opacity:1;}
+.rpt-copyrow{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;margin-top:12px;padding:12px 16px;background:#fff;border:1px solid #E0E0E0;border-radius:14px;font-family:var(--ff);font-size:17px;font-weight:700;line-height:1.4;letter-spacing:.2px;color:#140001;cursor:pointer;transition:background .18s ease,border-color .18s ease,transform .18s ease;}
+.rpt-copyrow:hover{background:#F5FAE7;border-color:#B9C99C;}.rpt-copyrow:active{transform:scale(.99);}
+.rpt-copyrow:focus-visible{outline:2px solid #7D8A6E;outline-offset:2px;}
+.rpt-copyrow svg,.rpt-copyrow img{width:24px;height:24px;display:block;object-fit:contain;transform:scaleY(-1);}
+.rpt-copyrow.is-copied{background:#FCFCFC;color:#7D8A6E;}
+.rpt-copyrow.is-copied img{width:16px;height:16px;transform:none;}
+/* share + explore */
+.rpt-share{display:flex;align-items:center;justify-content:center;gap:12px;background:#E9F0D6;border:1px solid #E0E0E0;
+  border-radius:14px;padding:12px 0;font-family:var(--ff);font-size:17px;font-weight:700;color:#140001;cursor:pointer;transition:background .18s ease,transform .18s ease,box-shadow .18s ease;}
+.rpt-share:hover{background:#DBEEAC;box-shadow:0 6px 18px rgba(47,55,34,.1);transform:translateY(-1px);}.rpt-share:active{transform:translateY(0) scale(.99);}
+.rpt-share svg,.rpt-share img{width:22px;height:22px;display:block;object-fit:contain;}
+.rpt-x-t{font-size:18px;font-weight:700;display:block;}
+.rpt-x-s{font-size:14px;color:#878787;display:block;margin:4px 0 10px;}
+.rpt-x{display:flex;align-items:center;gap:12px;width:100%;background:#fff;border:1px solid #E2E8F0;border-radius:14px;padding:12px 6px;font-family:var(--ff);font-size:17px;font-weight:500;text-align:left;color:#1E293B;cursor:pointer;transition:border-color .18s ease,background .18s ease,transform .18s ease;}
+.rpt-x:hover,.rpt-x.is-sent{border-color:#B9C99C;background:#F8FBEF;}
+.rpt-x:active{transform:scale(.99);}
+.rpt-x:focus-visible{outline:2px solid #7D8A6E;outline-offset:2px;}
+.rpt-x+.rpt-x{margin-top:8px;}
+.rpt-x .xic{width:40px;height:40px;background:transparent;color:#1D2129;display:flex;align-items:center;justify-content:center;flex:none;}
+.rpt-x .xic svg,.rpt-x .xic img{width:20px;height:20px;display:block;object-fit:contain;}
+/* bottom bar */
+.rpt-bar2{flex:none;display:flex;align-items:center;gap:10px;padding:10px 14px;background:#fff;border-top:1px solid #F0F0F0;}
+.rpt-mini{width:24px;height:24px;border-radius:4px;background:transparent;color:#878787;display:flex;align-items:center;justify-content:center;border:0;cursor:pointer;padding:0;transition:background .18s ease,transform .18s ease,box-shadow .18s ease;}
+.rpt-mini.is-rating{background:#F4F4F4;}
+.rpt-mini:hover{background:#E9F0D6;transform:translateY(-1px);}
+.rpt-mini:active{transform:translateY(0) scale(.94);}
+.rpt-mini.is-active{background:#E9F0D6;box-shadow:inset 0 0 0 1px #B9C99C;}
+.rpt-mini:focus-visible,.rpt-dl:focus-visible,.rpt-share:focus-visible,.rpt-copybtn:focus-visible{outline:2px solid #7D8A6E;outline-offset:2px;}
+.rpt-mini img{display:block;object-fit:contain;}
+.rpt-mini.thumb-up img,.rpt-mini.thumb-down img{width:13.5px;height:13.5px;}
+.rpt-mini.thumb-down img{transform:scaleY(-1);}
+.rpt-mini.copy img,.rpt-mini.bookmark img{width:24px;height:24px;transform:scaleY(-1);}
+.rpt-dl{margin-left:auto;display:inline-flex;align-items:center;gap:6px;background:#fff;color:#140001;border:1px solid #D6D6D6;
+  border-radius:14px;padding:6px 16px;font-family:var(--ff);font-size:14px;line-height:24px;cursor:pointer;transition:background .18s ease,border-color .18s ease,transform .18s ease;}
+.rpt-dl:hover{background:#F5FAE7;border-color:#B9C99C;transform:translateY(-1px);}
+.rpt-dl:active{transform:translateY(0) scale(.98);}
+.rpt-dl svg,.rpt-dl img{width:16px;height:16px;display:block;object-fit:contain;}
+/* flow mock */
+.flow{background:#fff;border-radius:16px;box-shadow:var(--sh-lg);width:min(430px,100%);padding:22px;display:flex;align-items:center;gap:14px;}
+.flow .files{display:flex;flex-direction:column;gap:8px;}
+.flow .f{width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;}
+.flow .arrow{flex:1;height:1px;background:var(--line2);position:relative;min-width:26px;}
+.flow .arrow::after{content:"";position:absolute;right:-1px;top:-3px;border:4px solid transparent;border-left-color:var(--line2);}
+.flow .turtle{width:64px;height:64px;flex:none;}
+.flow .out{flex:none;background:#FAF9F7;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:11px;}
+.flow .out b{display:block;font-size:12px;margin-bottom:4px;}
+.flow .out .g{color:var(--save);font-weight:700;}
+
+/* ============ ROI calculator ============ */
+.calc-card{background:#fff;border:1px solid var(--line);border-radius:var(--r-xl);padding:36px 38px;max-width:880px;margin:0 auto;box-shadow:var(--sh-sm);}
+.calc-top{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;}
+.calc-top .lab{font-size:14px;font-weight:700;padding-bottom:8px;}
+.calc-top .val{font-family:var(--serif);font-size:clamp(32px,4vw,48px);line-height:.95;font-variant-numeric:tabular-nums;}
+.calc-top .val small{font-size:.5em;vertical-align:.16em;margin-right:2px;}
+input[type=range].rng{-webkit-appearance:none;appearance:none;width:100%;height:4px;border-radius:2px;background:#ECEAE6;outline:none;cursor:pointer;margin:26px 0 8px;}
+.rng::-webkit-slider-runnable-track{height:4px;border-radius:2px;}
+.rng::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:22px;height:22px;border-radius:50%;
+  background:var(--black);border:4px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.25);margin-top:-9px;cursor:grab;}
+.rng::-moz-range-track{height:4px;border-radius:2px;background:#ECEAE6;}
+.rng::-moz-range-progress{height:4px;border-radius:2px;background:var(--black);}
+.rng::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--black);border:4px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.25);cursor:grab;}
+.calc-ends{display:flex;justify-content:space-between;font-size:12px;color:var(--faint);}
+.calc-stats{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);margin-top:26px;padding-top:24px;}
+.calc-stat{padding:0 22px;}
+.calc-stat:first-child{padding-left:0;}
+.calc-stat:not(:first-child){border-left:1px solid var(--line);}
+.calc-stat .k{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);}
+.calc-stat .v{font-family:var(--serif);font-size:clamp(24px,2.6vw,34px);margin-top:9px;line-height:1;font-variant-numeric:tabular-nums;}
+.calc-stat.save .v{color:var(--save);}
+.calc-foot{display:flex;align-items:center;justify-content:flex-start;gap:18px;border-top:1px solid var(--line);margin-top:24px;padding-top:22px;flex-wrap:wrap;}
+.calc-checks{display:flex;gap:18px;flex-wrap:wrap;}
+.calc-checks span{font-size:13px;color:var(--ink2);display:inline-flex;align-items:center;gap:7px;}
+.calc-checks svg{width:13px;height:13px;stroke:var(--save);fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;}
+.calc-note{text-align:center;font-size:11.5px;color:var(--faint);margin:16px auto 0;max-width:560px;line-height:1.6;text-wrap:balance;}
+
+/* ============ film ============ */
+.film{position:relative;border-radius:var(--r-xl);overflow:hidden;aspect-ratio:16/9;box-shadow:var(--sh-md);
+  background:#ECEFE9 !important;cursor:none;}
+.film::before,.film::after{content:none !important;}
+.film video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;background:#ECEFE9;}
+.film.playing{cursor:auto;}
+.film-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;}
+.fc-logo{width:82px;height:82px;filter:drop-shadow(0 6px 18px rgba(20,18,12,.18));}
+.playbadge{display:inline-flex;align-items:center;gap:9px;background:var(--black);color:#fff;border-radius:var(--r-pill);
+  padding:11px 20px;font-size:13.5px;font-weight:500;transition:opacity .25s;}
+.tri{width:0;height:0;border-left:9px solid #fff;border-top:5.5px solid transparent;border-bottom:5.5px solid transparent;}
+.film-cursor{position:fixed;top:0;left:0;z-index:300;pointer-events:none;display:none;align-items:center;gap:9px;
+  background:var(--black);color:#fff;border-radius:var(--r-pill);padding:11px 20px;font-size:13.5px;font-weight:500;
+  transform:translate(-50%,-50%);white-space:nowrap;box-shadow:var(--sh-md);}
+@media(hover:none){.film{cursor:auto;}}
+
+/* ============ real data ============ */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:28px;margin-bottom:64px;}
+.stat .n{font-family:var(--serif);font-size:clamp(38px,4.6vw,58px);line-height:1;letter-spacing:.01em;}
+.stat .n small{font-size:.44em;}
+.stat .t{font-size:13.5px;font-weight:700;margin-top:12px;}
+.stat .c{font-size:12.5px;color:var(--muted);margin-top:5px;line-height:1.65;max-width:26ch;}
+.data-note{text-align:center;font-size:11.5px;color:var(--faint);margin-top:-28px;margin-bottom:56px;letter-spacing:.02em;}
+/* carousel */
+.caro{position:relative;border-radius:var(--r-xl);overflow:hidden;min-height:400px;
+  display:flex;align-items:center;justify-content:center;padding:46px 0 88px;}
+.slides{position:relative;width:100%;height:292px;perspective:1400px;}
+.slide{position:absolute;top:50%;left:50%;width:min(460px,80%);background:#fff;border-radius:20px;box-shadow:var(--sh-lg);
+  padding:26px 30px;opacity:0;pointer-events:none;transform:translate(-50%,-50%) scale(.7);z-index:1;
+  transition:transform .6s var(--settle),opacity .6s var(--settle),filter .6s var(--settle);will-change:transform,opacity;}
+.slide.is-active{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1);z-index:3;filter:none;}
+.slide.is-prev{opacity:.42;transform:translate(-88%,-50%) scale(.8);z-index:2;filter:blur(1.5px);}
+.slide.is-next{opacity:.42;transform:translate(-12%,-50%) scale(.8);z-index:2;filter:blur(1.5px);}
+.slide .case{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);}
+.slide .big{font-family:var(--serif);font-size:clamp(30px,3.4vw,42px);color:var(--save);margin:10px 0 4px;}
+.slide .big.ink{color:var(--ink);}
+.slide q{display:block;font-size:14px;color:var(--ink2);line-height:1.75;margin:10px 0 18px;quotes:"“" "”";}
+.slide .who{display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--muted);}
+.slide .who .av{width:34px;height:34px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 2px #fff;}
+.caro-btn{position:absolute;bottom:22px;top:auto;width:46px;height:44px;border-radius:14px;cursor:pointer;z-index:6;
+  background:rgba(255,255,255,.32);border:1px solid rgba(255,255,255,.55);
+  backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%);
+  box-shadow:0 8px 22px -8px rgba(30,36,22,.3),inset 0 1px 0 rgba(255,255,255,.5);
+  display:flex;align-items:center;justify-content:center;transition:background .2s,transform .2s var(--settle);}
+.caro-btn:hover{background:rgba(255,255,255,.6);transform:translateY(-2px);}
+.caro-btn svg,.caro-btn img{width:17px;height:17px;display:block;}
+.caro-btn.prev{right:calc(50% + 6px);left:auto;}
+.caro-btn.next{left:calc(50% + 6px);right:auto;}
+.dots{display:none;}
+.dots i{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.55);cursor:pointer;transition:.2s;}
+.dots i.on{background:#fff;width:18px;border-radius:3px;}
+
+/* ============ vision ============ */
+.vision{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid var(--line);}
+.vis{padding:30px 28px 8px;border-left:1px solid var(--line);}
+.vis:first-child{border-left:0;padding-left:0;}
+.vis-ic{width:46px;height:46px;border-radius:13px;background:var(--save-soft);color:var(--pine);display:flex;align-items:center;justify-content:center;margin-bottom:16px;}
+.vis-ic svg{width:26px;height:26px;}
+.vis.now .vis-ic{background:linear-gradient(135deg,#93CC6C 0%,#1F8F52 100%);color:#fff;}
+.vis.next .vis-ic{background:linear-gradient(135deg,#8FC783 0%,#5B9BD1 100%);color:#fff;}
+.vis.future .vis-ic{background:linear-gradient(135deg,#7FB3E8 0%,#3E78C2 100%);color:#fff;}
+.vis.next .tag{color:#5B9BD1;}
+.vis.future .tag{color:#4A86C8;}
+.vis .tag{font-size:10.5px;letter-spacing:.16em;font-weight:700;color:var(--faint);}
+.vis.now .tag{color:var(--save);}
+.vis h3{font-size:17px;font-weight:700;margin:12px 0 8px;}
+.vis p{font-size:13px;color:var(--muted);line-height:1.75;}
+
+/* ============ animated light-green wash (replaces pink) ============ */
+.tile.c .art,.faq-card{position:relative;overflow:hidden;background:linear-gradient(180deg,#F8FBF2 0%,#EAF3DE 100%);}
+.tile.c .art::before,.faq-card::before{content:"";position:absolute;width:78%;padding-top:78%;left:-20%;bottom:-40%;
+  border-radius:50%;filter:blur(34px);background:radial-gradient(circle,rgba(219,238,172,.95),rgba(219,238,172,0) 66%);
+  animation:drift1 9s ease-in-out infinite alternate;}
+.tile.c .art::after,.faq-card::after{content:"";position:absolute;width:64%;padding-top:64%;right:-16%;bottom:-32%;
+  border-radius:50%;filter:blur(38px);background:radial-gradient(circle,rgba(70,178,119,.48),rgba(70,178,119,0) 66%);
+  animation:drift2 12s ease-in-out infinite alternate;}
+.tile.c .art>*,.faq-card>*{position:relative;z-index:1;}
+/* blue (a) + orange (b) tiles get the same drifting-fog treatment as the green (c) */
+.tile.a .art,.tile.b .art{position:relative;overflow:hidden;}
+.tile.a .art::before{content:"";position:absolute;width:78%;padding-top:78%;left:-20%;bottom:-40%;border-radius:50%;filter:blur(34px);background:radial-gradient(circle,rgba(166,201,232,.92),rgba(166,201,232,0) 66%);animation:drift1 10s ease-in-out infinite alternate;z-index:0;}
+.tile.a .art::after{content:"";position:absolute;width:64%;padding-top:64%;right:-16%;bottom:-32%;border-radius:50%;filter:blur(38px);background:radial-gradient(circle,rgba(120,165,215,.5),rgba(120,165,215,0) 66%);animation:drift2 13s ease-in-out infinite alternate;z-index:0;}
+.tile.b .art::before{content:"";position:absolute;width:78%;padding-top:78%;left:-20%;bottom:-40%;border-radius:50%;filter:blur(34px);background:radial-gradient(circle,rgba(247,182,112,.9),rgba(247,182,112,0) 66%);animation:drift1 11s ease-in-out infinite alternate;z-index:0;}
+.tile.b .art::after{content:"";position:absolute;width:64%;padding-top:64%;right:-16%;bottom:-32%;border-radius:50%;filter:blur(38px);background:radial-gradient(circle,rgba(231,150,78,.46),rgba(231,150,78,0) 66%);animation:drift2 14s ease-in-out infinite alternate;z-index:0;}
+.tile.a .art>*,.tile.b .art>*{position:relative;z-index:1;}
+@keyframes drift1{to{transform:translate(15%,-18%) scale(1.18);}}
+@keyframes drift2{to{transform:translate(-13%,-22%) scale(1.12);}}
+
+/* ============ FAQ ============ */
+.faq-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:56px;align-items:start;}
+.faq-card{border-radius:var(--r-lg);padding:34px;min-height:400px;
+  display:flex;flex-direction:column;align-items:flex-start;}
+.faq-card h2{font-size:clamp(28px,3vw,38px);margin-top:18px;letter-spacing:-.012em;}
+.faq-card .btn{margin-top:auto;}
+.faq{border-bottom:1px solid var(--line);}
+.faq-q{width:100%;background:none;border:0;text-align:left;cursor:pointer;padding:20px 2px;display:flex;
+  align-items:center;justify-content:space-between;gap:16px;font-family:var(--ff);font-size:16.5px;font-weight:500;color:var(--ink);}
+.faq-q .pm{width:28px;height:28px;border-radius:50%;background:#F3F1EE;display:flex;align-items:center;justify-content:center;flex:none;transition:.3s var(--settle);}
+.faq-q .pm svg,.faq-q .pm img{width:13px;height:13px;display:block;transition:.3s var(--settle);}
+.faq.open .pm{background:var(--black);}
+.faq.open .pm svg{stroke:#fff;transform:rotate(45deg);}
+.faq.open .pm img{filter:brightness(0) invert(1);transform:rotate(45deg);}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .4s var(--settle);}
+.faq-a p{padding:0 40px 20px 2px;font-size:13.5px;color:var(--muted);line-height:1.8;}
+
+/* ============ final CTA ============ */
+.final{padding:130px 0 120px;text-align:center;}
+.final h2{font-size:clamp(34px,4.4vw,54px);letter-spacing:-.015em;}
+.final p{color:var(--muted);font-size:15px;margin-top:16px;}
+.final .hero-cta{margin-top:32px;}
+
+/* ============ footer ============ */
+footer{padding:0 var(--pad) 24px;}
+.foot{max-width:var(--maxw);margin:0 auto;background:#1C1C1A;border-radius:var(--r-xl);color:#EDEBE8;padding:52px 48px 30px;}
+.foot-top{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:40px;padding-bottom:36px;border-bottom:1px solid rgba(255,255,255,.1);}
+.foot-brand img{height:26px;width:auto;}
+.foot-brand p{font-size:13px;color:#9C9A94;margin-top:14px;line-height:1.75;max-width:30ch;}
+.foot h4{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#8A8880;margin:0 0 14px;font-weight:500;}
+.foot .col a{display:block;font-size:13.5px;color:#C9C7C1;padding:5px 0;transition:.2s;}
+.foot .col a:hover{color:#fff;}
+.foot-bot{display:flex;align-items:center;justify-content:space-between;gap:14px;padding-top:22px;font-size:12px;color:#8A8880;flex-wrap:wrap;}
+.foot-bot a{color:#C9C7C1;}
+.totop{display:inline-flex;align-items:center;gap:6px;cursor:pointer;}
+
+/* ============ typewriter caret (gradient green) ============ */
+.caret{display:inline-block;width:2px;height:.92em;margin-left:4px;vertical-align:-.06em;
+  background:linear-gradient(to bottom,#51A1FF 0%,#3BB08F 55%,#1F8F52 100%);
+  animation:cursor-blink .8s steps(1) infinite;}
+@keyframes cursor-blink{0%,45%{opacity:1}46%,100%{opacity:0}}
+/* chat messages appear one by one after the headline types */
+html.js-anim .chatcard .msg,html.gsap-on .chatcard .msg{opacity:0;transform:translateY(8px);transition:opacity .5s var(--settle),transform .5s var(--settle);}
+html.js-anim .chatcard .msg.show,html.gsap-on .chatcard .msg.show{opacity:1;transform:none;}
+
+/* gsap mode: inline styles drive motion — kill CSS transitions so they don't double-ease */
+html.gsap-on .reveal{transition:none;}
+html.gsap-on .wfade .w{transition:none;}
+
+/* ============ reveal (visibility-gated; content never hidden by default) ============ */
+.reveal{transition:opacity .7s var(--settle),transform .7s var(--settle);}
+html.js-anim .reveal{opacity:0;transform:translateY(24px);}
+html.js-anim .reveal.in{opacity:1;transform:none;}
+.reveal.d1{transition-delay:.08s;}.reveal.d2{transition-delay:.16s;}.reveal.d3{transition-delay:.24s;}
+
+/* ============ responsive ============ */
+@media(max-width:960px){
+  .nav-links{display:none;}
+  .burger{display:block;margin-left:auto;}
+  .langtoggle{margin-left:auto;}
+  .burger{margin-left:8px;}
+  .nav-cta-btn{display:none;}
+  .tiles{grid-template-columns:1fr;}
+  .qcmp{margin-bottom:128px;}
+  .bento{grid-template-columns:1fr;gap:40px;margin-bottom:128px;}
+  .bento.flip .btext{order:0;}
+  .stats{grid-template-columns:1fr 1fr;gap:34px 20px;}
+  .faq-grid{grid-template-columns:1fr;gap:30px;}
+  .faq-card{min-height:300px;}
+  .vision{grid-template-columns:1fr;}
+  .vis{border-left:0;padding-left:0;border-top:1px solid var(--line);}
+  .vis:first-child{border-top:0;}
+  .caro{padding:30px 16px;}
+  .caro-btn.prev{left:8px;}.caro-btn.next{right:8px;}
+  .foot-top{grid-template-columns:1fr;gap:28px;}
+  .band{padding:56px 20px;border-radius:var(--r-lg);}
+  .section{padding:76px 0;}
+  .frame::before,.frame::after{display:none;}
+}
+@media(max-width:560px){
+  .hero{padding:56px 0 24px;}
+  .hero-media{padding:48px 12px;}
+  .chatcard{width:100%;height:520px;}
+  .hero-chip{right:12px;bottom:12px;}
+  .hero h1{font-size:32px;}
+  .sec-head h2{font-size:27px;}
+  .final h2{font-size:30px;}
+  .hero-ticks span{padding:0 10px;font-size:12px;}
+  .calc-card{padding:24px 20px;}
+  .calc-stats{grid-template-columns:1fr;}
+  .calc-stat{padding:14px 0 0;}
+  .calc-stat:not(:first-child){border-left:0;border-top:1px solid var(--line);margin-top:14px;}
+  .calc-foot{flex-direction:column;align-items:stretch;}
+  .calc-foot .btn{width:100%;}
+  .stats{grid-template-columns:1fr;}
+  .flow{flex-direction:column;}
+  .flow .files{flex-direction:row;}
+  .flow .arrow{width:1px;height:22px;min-width:0;}
+  .flow .arrow::after{right:-3px;top:auto;bottom:-1px;border:4px solid transparent;border-top-color:var(--line2);}
+  .bart{padding:14px;}
+  .qcmp{margin-bottom:104px;}
+  .bento{gap:32px;margin-bottom:104px;}
+  .btext>p{margin-top:18px;}
+  .blist{margin-top:24px;gap:12px;}
+  .qcmp+.bento .bart{padding:0;}
+  .rpt{width:100%;height:720px;}
+  .rpt-scroll{padding-left:10px;padding-right:8px;}
+  .rpt-stats{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;}
+  .rpt-stats>div{padding:10px 8px;}
+  .rpt-stats small{white-space:normal;}
+  .qfig-body{padding:14px;}
+  .qfig-head{padding-left:12px;padding-right:12px;gap:6px;}
+  .qfig-head b{font-size:15px;white-space:nowrap;}
+  .qfig-stat{padding:10px 8px;}
+  .qfig-pills span{font-size:15px;}
+}
+@media(prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important;}
+  html{scroll-behavior:auto;}
+}
+</style>
+</head>
+<body class="frame">
+
+<!-- ============ NAV ============ -->
+<header class="nav">
+  <div class="wrap nav-in">
+    <a class="brand" href="#top">
+      <img class="lockup" src="assets/shellmind-dark.png" alt="Shellmind 问龟" />
+    </a>
+    <nav class="nav-links">
+      <a href="#why"><span class="zh">理念</span><span class="en">Philosophy</span></a>
+      <a href="#capabilities"><span class="zh">能力</span><span class="en">Capabilities</span></a>
+      <a href="#product"><span class="zh">产品</span><span class="en">Product</span></a>
+      <a href="#data"><span class="zh">真实数据</span><span class="en">Real Data</span></a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="langtoggle" role="group" aria-label="Language">
+      <button type="button" data-lang="zh">中</button><button type="button" data-lang="en">EN</button>
+    </div>
+    <a class="btn btn-black nav-cta-btn js-guide" href="#final" style="padding:10px 18px;font-size:13px;"><span class="zh">体检报价单</span><span class="en">Quote check</span></a>
+    <button class="burger" aria-label="菜单"><img src="assets/lucide/menu.svg" alt=""/></button>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <canvas id="heroFx" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <div class="hero-eyebrow" style="margin-bottom:20px;"><span class="chip"><span class="zh">AI · 装修报价审核</span><span class="en">AI · renovation-quote audit</span></span></div>
+    <h1 id="typeH1"><span class="zh">让装修，不再靠运气。</span><span class="en">Renovation, no longer<br>left to luck.</span></h1>
+    <p class="hero-sub reveal"><span class="zh">问龟AI，站在消费者一侧——让价格更透明，让选择更直接，让过程不焦虑。</span><span class="en">Shellmind stands on the consumer's side — making prices more transparent, choices more direct, and the process less anxious.</span></p>
+    <div class="hero-ticks reveal d1">
+      <span><img class="ic" src="assets/tick-money.svg" alt="" /><span class="zh">省钱</span><span class="en">Save money</span></span>
+      <span><img class="ic" src="assets/tick-shield.svg" alt="" /><span class="zh">省心</span><span class="en">Save worry</span></span>
+      <span><img class="ic" src="assets/tick-doc.svg" alt="" /><span class="zh">避坑</span><span class="en">Avoid pitfalls</span></span>
+    </div>
+    <div class="hero-cta reveal d2">
+      <a class="btn btn-black js-guide" href="#final"><img class="btn-icon" src="assets/lucide/scan-text.svg" alt=""/><span class="zh">体检报价单</span><span class="en">Quote check</span></a>
+      <a class="btn btn-ghost" href="#film"><img class="btn-icon" src="assets/lucide/circle-play.svg" alt=""/><span class="zh">看看问龟怎么工作</span><span class="en">See how Shellmind works</span></a>
+    </div>
+
+    <div class="hero-media reveal d2">
+      <div class="chatcard">
+        <div class="hd">
+          <img src="assets/turtle-green.gif" alt="" />
+          <div><div class="t"><span class="zh">问龟 AI 装修管家</span><span class="en">Shellmind · AI Assistant</span></div>
+          <div class="s"><i></i><span class="zh">在线 · AI ASSISTANT</span><span class="en">Online · AI ASSISTANT</span></div></div>
+        </div>
+        <div class="bd">
+          <div class="msg ai"><span class="zh">你好！你现在在装修的哪个阶段？</span><span class="en">Hello! Tell me what home renovation stage are you in currently?</span></div>
+          <div class="msg ufile" id="userFile"><svg viewBox="0 0 28 34" aria-hidden="true"><path fill="#E5322E" d="M6 2h13l6 6v21a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V5a3 3 0 0 1 3-3Z"/><path fill="#F6AFA9" d="M19 2l6 6h-4a2 2 0 0 1-2-2V2Z"/><text x="12.5" y="27" font-size="8" font-weight="700" fill="#fff" text-anchor="middle">PDF</text></svg><span class="fm2"><b><span class="zh">全屋定制报价单.pdf</span><span class="en">Cabinetry-quote.pdf</span></b><small><span class="zh">6 页 · 43 项明细</span><span class="en">6 pages · 43 line items</span></small></span></div>
+          <div class="msg user"><span class="zh">刚拿到全屋定制报价 ¥85,500，帮我看看贵不贵？</span><span class="en">Just got a custom-cabinetry quote at ¥85,500 — is it fair?</span></div>
+          <div class="msg agentcard" id="agentCard">
+            <div class="at">
+              <img class="spark" src="assets/fig-spark.svg" alt="" />
+              <span class="ttl"><span class="live"><span class="zh">问龟正在解析报价单</span><span class="en">Shellmind is parsing the quote</span></span><span class="fin"><span class="zh">问龟已完成分析</span><span class="en">Shellmind finished analyzing</span></span></span>
+              <img class="chev" src="assets/lucide/chevron-down.svg" alt=""/>
+            </div>
+            <div class="abody">
+              <div class="arow"><img src="assets/fig-glasses.svg" alt="" /><span class="tx"><span class="zh" data-t="正在解读 PDF 表格">正在解读 PDF 表格</span><span class="en" data-t="Reading the PDF table">Reading the PDF table</span></span></div>
+              <div class="arow"><svg viewBox="0 0 24 24"><path d="M14 3H7a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V8l-4-5Z"/><path d="M14 3v5h4M9 13h6M9 17h4"/></svg><span class="tx"><span class="zh" data-t="正在优化表格">正在优化表格</span><span class="en" data-t="Optimizing the table">Optimizing the table</span></span></div>
+              <div class="arow"><svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4.5V3h6v1.5M9 12l2 2 4-4"/></svg><span class="tx"><span class="zh" data-t="正在对表格内容进行评估">正在对表格内容进行评估</span><span class="en" data-t="Evaluating the contents">Evaluating the contents</span></span></div>
+              <div class="arow"><svg viewBox="0 0 24 24"><path d="M17 3l4 4L8 20l-5 1 1-5L17 3Z"/></svg><span class="tx"><span class="zh" data-t="正在生成砍价建议">正在生成砍价建议</span><span class="en" data-t="Drafting negotiation advice">Drafting negotiation advice</span></span></div>
+            </div>
+            <div class="pr">
+              <div class="pr-head">
+                <div class="pr-head-main"><span class="pr-head-icon"><img src="assets/figma-report/exact/205129-frame.svg" alt=""/></span><b><span class="zh">完整价格对比</span><span class="en">Complete price comparison</span></b><img class="pr-head-info" src="assets/figma-report/exact/205129-info.svg" alt=""/></div>
+                <span class="pr-head-caret"><img src="assets/figma-report/exact/205129-caret.svg" alt=""/></span>
+              </div>
+              <div class="pr-body">
+                <p class="pr-lead"><span class="zh">你花了 ¥47,416，商家实际花了多少？</span><span class="en">You spent ¥47,416, how much did the merchant actually spend?</span></p>
+                <div class="pr-costs">
+                  <div class="pr-cost cost"><small><span class="zh">商家成本</span><span class="en">Merchant cost</span></small><b>¥33,200</b><i><span class="zh">材料 + 安装 + 设计 + 运输</span><span class="en">Materials + installation + design + transportation</span></i></div>
+                  <div class="pr-cost profit"><small><span class="zh">利润范围</span><span class="en">Profit range</span></small><b>¥20,000 - ¥30,000</b></div>
+                </div>
+                <div class="pr-pricebar"><span class="pr-priceflag"><span class="zh">商家报价 ¥38,450</span><span class="en">Merchant quoted ¥38,450</span></span><div class="pr-track"><i></i><i></i><i></i></div><span class="pr-marker"></span></div>
+                <div class="pr-legend"><span><i style="background:#188038"></i><span class="zh">成本</span><span class="en">Cost</span></span><span><i style="background:#FFB800"></i><span class="zh">参考区间</span><span class="en">Reference range</span></span><span><i style="background:#F14141"></i><span class="zh">溢价</span><span class="en">Premium</span></span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="inp">
+          <div class="up" aria-hidden="true"><img src="assets/lucide/paperclip.svg" alt=""/></div>
+          <div class="ph"><span class="zh">帮我看看这份报价单…</span><span class="en">Understand my quote…</span></div>
+          <div class="send"><img src="assets/lucide/send-horizontal.svg" alt=""/></div>
+        </div>
+      </div>
+      <div class="hero-chip">
+        <div class="k"><span class="zh">省下 85 分钟</span><span class="en">85 minutes saved</span></div>
+        <div class="v">5 min<small><span class="zh">完成 · 原需 90 min</span><span class="en">to finish · from 90 min</span></small></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WHY / PROBLEM ============ -->
+<section class="section" id="why">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2 class="wfade" data-wfade><span class="zh">报价单上的字都认识，<br>合一起就看不懂了</span><span class="en">You know every word on the quote —<br>just not what they add up to</span></h2>
+      <p><span class="zh">每年，2000 万户家庭走进一个万亿级市场，而大多数人一生只装修几次。他们不缺选择，缺的是一个可信的判断。</span><span class="en">Every year, 20 million households step into a trillion-yuan market — and most renovate only a few times in a lifetime. They don't lack choices. What they lack is a judgment they can trust.</span></p>
+    </div>
+    <div class="tiles">
+      <div class="tile a reveal">
+        <div class="art">
+          <div class="mini">
+            <div class="row"><span class="l"><span class="zh">多层实木柜体</span><span class="en">Plywood cabinet</span></span><span class="r q">¥628/㎡ ?</span></div>
+            <div class="row"><span class="l"><span class="zh">五金（未标品牌）</span><span class="en">Hardware (no brand)</span></span><span class="r q">¥1,200 ?</span></div>
+            <div class="row"><span class="l"><span class="zh">封边工艺</span><span class="en">Edge banding</span></span><span class="r q">?</span></div>
+            <div class="cap"><span class="zh">哪项合理、哪项虚高，看不出来</span><span class="en">Which is fair, which is inflated — impossible to tell</span></div>
+          </div>
+        </div>
+        <h3><span class="zh">看不懂贵不贵</span><span class="en">Can't tell if it's fair</span></h3>
+        <p><span class="zh">板材等级、五金品牌、计价方式，专业话术堆在一起，没人看得懂。</span><span class="en">Board grades, hardware brands, pricing methods — jargon piled together that nobody can read.</span></p>
+      </div>
+      <div class="tile b reveal d1">
+        <div class="art">
+          <div class="mini">
+            <div class="row"><span class="l"><span class="zh">报价单总额</span><span class="en">Quoted total</span></span><span class="r">¥47,416</span></div>
+            <div class="row"><span class="l"><span class="zh">+ 见光板</span><span class="en">+ Exposed panels</span></span><span class="r hid">?</span></div>
+            <div class="row"><span class="l"><span class="zh">+ 拉直器 · 灯带</span><span class="en">+ Straighteners · strips</span></span><span class="r hid">?</span></div>
+            <div class="cap"><span class="zh">签完合同，才一项项冒出来</span><span class="en">They surface one by one — after you sign</span></div>
+          </div>
+        </div>
+        <h3><span class="zh">增项防不住</span><span class="en">Add-ons you can't foresee</span></h3>
+        <p><span class="zh">报价时不提，施工到一半才出现，一项一项往上加。</span><span class="en">Never mentioned in the quote, they appear mid-build and stack up.</span></p>
+      </div>
+      <div class="tile c reveal d2">
+        <div class="art">
+          <div class="mini">
+            <div class="bub me"><span class="zh">能便宜点吗？</span><span class="en">Any room on the price?</span></div>
+            <div class="bub"><span class="zh">这已经是最低价了，再低做不了。</span><span class="en">That's already our lowest — can't go further.</span></div>
+            <div class="cap"><span class="zh">没有依据，开口就输了</span><span class="en">Without evidence, you lose the moment you speak</span></div>
+          </div>
+        </div>
+        <h3><span class="zh">想砍不会砍</span><span class="en">Want to bargain, don't know how</span></h3>
+        <p><span class="zh">不知道该砍哪一项、砍多少合适、怎么说商家才会松口。</span><span class="en">Which item to cut, by how much, and what to say to make them budge.</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CAPABILITIES ============ -->
+<section class="section" id="capabilities" style="padding-top:0;">
+  <div class="wrap">
+    <div class="band">
+      <div class="sec-head">
+        <h2><span class="zh">它不替你决定，<br>它让你知道为什么</span><span class="en">It doesn't decide for you —<br>it lets you know why</span></h2>
+        <p><span class="zh">一个懂家庭、懂预算、懂材料，也懂你为什么焦虑的 AI 装修管家。</span><span class="en">An AI renovation concierge that understands your family, your budget, your materials — and why you're anxious.</span></p>
+      </div>
+      <div style="text-align:center;">
+        <div class="tabs" id="capTabs"><span class="tab-hl" aria-hidden="true"></span>
+          <button class="on" data-cap="0"><span class="zh">看懂</span><span class="en">Understand</span></button>
+          <button data-cap="1"><span class="zh">判断</span><span class="en">Judge</span></button>
+          <button data-cap="2"><span class="zh">行动</span><span class="en">Act</span></button>
+          <button data-cap="3"><span class="zh">陪伴</span><span class="en">Accompany</span></button>
+        </div>
+      </div>
+      <div class="cap-caption" id="capCap">
+        <span data-i="0" class="on"><span class="zh">报价单、合同、材料、聊天记录——问龟会读、会比较，也会记住。复杂的资料，变成清楚的结论。</span><span class="en">Quotes, contracts, materials, chat records — Shellmind reads, compares, and remembers. Complex documents become clear conclusions.</span></span>
+        <span data-i="1" hidden><span class="zh">对比当地行情，权衡价格、配置与风险——哪里合理、哪里有问题、该不该签，都有依据。</span><span class="en">Against local market rates it weighs price, configuration and risk — what's fair, what's off, whether to sign.</span></span>
+        <span data-i="2" hidden><span class="zh">不止指出问题——给出成交区间、追问清单和谈价话术，直接拿去和商家沟通。</span><span class="en">Beyond flagging problems — a deal range, a follow-up checklist and scripts you can take straight to the merchant.</span></span>
+        <span data-i="3" hidden><span class="zh">从预算到验收，记住你家的每个决定——装修全程，都有一个站在你这边的管家。</span><span class="en">From budget to acceptance it remembers every decision — a concierge on your side through the whole journey.</span></span>
+      </div>
+      <div class="cap-stage">
+        <!-- 看懂 -->
+        <div class="cap-panel on parse capcard" data-i="0">
+          <div class="h"><img src="assets/turtle-green.gif" alt=""/><span class="zh">资料读取</span><span class="en">Document parsing</span><span class="tag"><span class="zh">看懂</span><span class="en">UNDERSTAND</span></span></div>
+          <div class="file">
+            <div class="fic"><svg viewBox="0 0 28 34" aria-hidden="true"><path fill="#E5322E" d="M6 2h13l6 6v21a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V5a3 3 0 0 1 3-3Z"/><path fill="#F4A6A4" d="M19 2 25 8h-4a2 2 0 0 1-2-2V2Z"/><text x="14" y="27" text-anchor="middle" fill="#fff" font-family="Arial,Helvetica,sans-serif" font-size="8" font-weight="800" letter-spacing=".3">PDF</text></svg></div>
+            <div><div class="fn"><span class="zh">全屋定制报价单.pdf</span><span class="en">custom-quote.pdf</span></div>
+            <div class="fm"><span class="zh">6 页 · 43 项明细</span><span class="en">6 pages · 43 line items</span></div></div>
+            <div class="ok">✓ <span class="zh">已读取</span><span class="en">parsed</span></div>
+          </div>
+          <div class="bar"><i></i></div>
+          <div class="fm" style="font-size:11.5px;color:var(--muted);"><span class="zh">识别 43 项 · 对比 12,000+ 条行情数据 · 记住你家的户型与预算</span><span class="en">43 items identified · benchmarked against 12,000+ market prices · your floor plan & budget remembered</span></div>
+        </div>
+        <!-- 判断 -->
+        <div class="cap-panel capcard" data-i="1">
+          <div class="h"><img src="assets/turtle-green.gif" alt=""/><span class="zh">建议谈价 · 优先级 高</span><span class="en">Suggest bargaining · high</span><span class="tag"><span class="zh">判断</span><span class="en">JUDGE</span></span></div>
+          <div class="ladder">
+            <div class="lrow"><span class="lk"><i style="background:var(--faint)"></i><span class="zh">商家报价</span><span class="en">Seller's price</span></span><span class="lv">¥5.82<small><span class="zh">万</span><span class="en">w</span></small></span></div>
+            <div class="lrow"><span class="lk"><i style="background:var(--warn)"></i><span class="zh">可谈价格</span><span class="en">Negotiable price</span></span><span class="lv" style="color:var(--warn)">¥4.85<small><span class="zh">万</span><span class="en">w</span></small></span></div>
+            <div class="lrow"><span class="lk"><i style="background:var(--save)"></i><span class="zh">合理参考</span><span class="en">Fair reference</span></span><span class="lv" style="color:var(--save)">¥5.04<small><span class="zh">万</span><span class="en">w</span></small></span></div>
+            <div class="lrow"><span class="lk"><i style="background:var(--danger)"></i><span class="zh">低价警戒线</span><span class="en">Low-price alert</span></span><span class="lv" style="color:var(--danger)">¥4.70<small><span class="zh">万</span><span class="en">w</span></small></span></div>
+          </div>
+          <div class="note"><span class="zh">建议从 ¥4.85万 谈起，¥5.04万 内可接受；低于 ¥4.70万 要重点核查减配、换料与售后风险。</span><span class="en">Open at ¥4.85w, accept within ¥5.04w; below ¥4.70w, check hard for downgrades, material swaps and after-sales risk.</span></div>
+        </div>
+        <!-- 行动 -->
+        <div class="cap-panel capcard script" data-i="2">
+          <div class="h"><img src="assets/turtle-green.gif" alt=""/><span class="zh">砍价话术 · 标准版</span><span class="en">Bargaining script · standard</span><span class="tag"><span class="zh">行动</span><span class="en">ACT</span></span></div>
+          <div class="q"><span class="zh">“见光板报 160，市场价 120–150；五金升级 1200，我了解 800 能做。这几项按合理价来，总价定在 ¥43,000，今天就能签。”</span><span class="en">“The exposed panel is quoted at 160 vs a 120–150 market rate; the hardware upgrade at 1,200 where 800 is common. Price these fairly, set the total at ¥43,000, and we sign today.”</span></div>
+          <div class="why">
+            <b><span class="zh">为什么可以这么说 —</span><span class="en">Why you can say that —</span></b>
+            <li><span class="zh">商家成本约 ¥33,200，¥43,000 成交他仍有利润</span><span class="en">Their cost is ≈¥33,200 — at ¥43,000 they still profit</span></li>
+            <li><span class="zh">利润率降到 14%，仍在行业正常区间</span><span class="en">Margin drops to 14%, still within the normal range</span></li>
+            <li><span class="zh">这些单项确实高于市场，直接拒单的概率很低</span><span class="en">These items really are above market — outright rejection is unlikely</span></li>
+          </div>
+          <button class="rpt-copybtn cap-copybtn" type="button" aria-pressed="false"><span class="ic"><img src="assets/figma-report/exact-v2/copy-all.svg" alt=""/></span><span class="zh">一键复制</span><span class="en">Copy All</span></button>
+        </div>
+        <!-- 陪伴 -->
+        <div class="cap-panel capcard" data-i="3">
+          <div class="h"><img src="assets/turtle-green.gif" alt=""/><span class="zh">你家的装修档案</span><span class="en">Your home's renovation archive</span><span class="tag"><span class="zh">陪伴</span><span class="en">ACCOMPANY</span></span></div>
+          <div class="tl">
+            <span class="done">✓ <span class="zh">预算规划</span><span class="en">Budget</span></span>
+            <span class="done">✓ <span class="zh">报价审核 · 省 ¥5,200</span><span class="en">Quote review · saved ¥5,200</span></span>
+            <span>○ <span class="zh">合同条款核对</span><span class="en">Contract check</span></span>
+            <span>○ <span class="zh">材料进场验收</span><span class="en">Material acceptance</span></span>
+            <span>○ <span class="zh">完工验收</span><span class="en">Final acceptance</span></span>
+          </div>
+          <div class="fm" style="font-size:11.5px;color:var(--muted);margin-top:14px;"><span class="zh">每一步的资料与决定都被记住，随时可查、随时能问。</span><span class="en">Every document and decision is remembered — searchable and askable, anytime.</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRODUCT ============ -->
+<section class="section" id="product" style="padding-top:20px;">
+  <div class="wrap">
+    <div class="sec-head left">
+      <h2><span class="zh">今天，先从一张报价单开始</span><span class="en">Today, we start with a single quote</span></h2>
+      <p style="max-width:56ch;"><span class="zh">上传一张报价单，问龟逐项读懂、对比行情、标出异常，给你一个能直接拿去谈的价格区间。装修里最容易被多收钱的那一步，先替你守住。</span><span class="en">Upload one quote — Shellmind reads it line by line, benchmarks the market, flags what's off, and hands you a price range you can take straight to the table. The step where you're most likely to be overcharged, covered first.</span></p>
+    </div>
+
+    <div class="qcmp reveal" id="qcmp">
+      <div class="qcmp-head">
+        <div class="ttl"><img src="assets/mark.png" alt=""/><span class="zh">报价单审核 · 三步出方案</span><span class="en">Quote review · three steps to a plan</span></div>
+      </div>
+      <div class="qcmp-body">
+        <div class="qcp qcp-fig qcp-identified">
+          <div class="qfig-head"><span class="qfig-ico"><img src="assets/figma-report/identified.svg" alt=""/></span><b><span class="zh">已识别内容</span><span class="en">Identified content</span></b><img class="qfig-caret" src="assets/figma-report/caret-down.svg" alt=""/></div>
+          <div class="qfig-body">
+            <div class="qfig-stats">
+              <div class="qfig-stat"><img class="stat-file" src="assets/figma-report/exact/stat-file-search.svg" alt=""/><small><span class="zh">报价单页数</span><span class="en">Number of pages</span></small><b>6 <span class="zh">页</span><span class="en">pages</span></b></div>
+              <div class="qfig-stat"><img class="stat-dollar" src="assets/figma-report/exact/stat-dollar.svg" alt=""/><small><span class="zh">报价总金额</span><span class="en">Total amount</span></small><b>¥47,416</b></div>
+              <div class="qfig-stat"><img class="stat-target" src="assets/figma-report/exact/stat-target.svg" alt=""/><small><span class="zh">识别项目</span><span class="en">Identified items</span></small><b>43 <span class="zh">项</span><span class="en">items</span></b></div>
+            </div>
+            <div class="qfig-sub"><span class="zh">涉及空间</span><span class="en">Involved spaces</span></div>
+            <div class="qfig-pills"><span><span class="zh">玄关</span><span class="en">Entrance</span></span><span><span class="zh">客厅</span><span class="en">Living room</span></span><span><span class="zh">主卧</span><span class="en">Master bedroom</span></span><span><span class="zh">次卧</span><span class="en">Secondary bedroom</span></span><span><span class="zh">厨房</span><span class="en">Kitchen</span></span></div>
+            <div class="qfig-sub"><span class="zh">涉及关键词</span><span class="en">Involved keywords</span></div>
+            <div class="qfig-pills"><span><span class="zh">板材</span><span class="en">Board materials</span></span><span><span class="zh">五金</span><span class="en">Hardware</span></span><span><span class="zh">灯带</span><span class="en">LED strip</span></span><span><span class="zh">见光板</span><span class="en">Light panel</span></span><span><span class="zh">拉直器</span><span class="en">Straightener</span></span></div>
+          </div>
+        </div>
+        <div class="qcp qcp-fig qcp-compare">
+          <div class="qfig-head"><span class="qfig-ico"><img src="assets/figma-report/frame.svg" alt=""/></span><b><span class="zh">完整价格对比</span><span class="en">Complete price comparison</span></b><img class="qfig-info" src="assets/figma-report/vector.svg" alt=""/><img class="qfig-caret" src="assets/figma-report/caret-down.svg" alt=""/></div>
+          <div class="qfig-body">
+            <p class="qfig-lead"><span class="zh">你花了 ¥47,416，商家实际花了多少？</span><span class="en">You spent ¥47,416, how much did the merchant actually spend?</span></p>
+            <div class="qfig-costs">
+              <div class="qfig-cost cost"><small><span class="zh">商家成本</span><span class="en">Merchant cost</span></small><b>¥33,200</b><i><span class="zh">材料 + 安装 + 设计 + 运输</span><span class="en">Materials + installation + design + transportation</span></i></div>
+              <div class="qfig-cost profit"><small><span class="zh">利润范围</span><span class="en">Profit range</span></small><b>¥20,000 -<br>¥30,000</b></div>
+            </div>
+            <div class="qfig-pricebar"><span class="qfig-flag"><span class="zh">商家报价 ¥38,450</span><span class="en">Merchant quoted ¥38,450</span></span><div class="qfig-track"><i></i><i></i><i></i></div><span class="qfig-marker"></span></div>
+            <div class="qfig-legend"><span><i style="background:#188038"></i><span class="zh">成本</span><span class="en">Cost</span></span><span><i style="background:#FFB800"></i><span class="zh">参考区间</span><span class="en">Reference range</span></span><span><i style="background:#F14437"></i><span class="zh">溢价</span><span class="en">Premium</span></span></div>
+          </div>
+        </div>
+        <div class="qcp qcp-plan">
+          <div class="qplan-head"><span class="qplan-ico"><img src="assets/figma-report/exact/plan-lightbulb.svg" alt=""/></span><b><span class="zh">价格建议</span><span class="en">Price Recommendation</span></b><img class="qplan-caret" src="assets/figma-report/plan-caret.svg" alt=""/></div>
+          <div class="qplan-body">
+            <div class="ff-offer-head">
+              <span class="ff-offer-ico"><span class="ff-trend" aria-hidden="true"><img src="assets/figma-report/exact/plan-trend-a.svg" alt=""/><img src="assets/figma-report/exact/plan-trend-b.svg" alt=""/></span></span>
+              <div class="ff-offer-copy"><div class="ff-offer-title"><span class="zh">建议砍价</span><span class="en">Suggest bargaining</span><img src="assets/figma-report/plan-dot.svg" alt=""/><span class="risk"><span class="zh">高</span><span class="en">high</span></span></div><p><span class="zh">重点锁定配置、合同与落地服务</span><span class="en">Focus on configuration, contract, and implementation services</span></p></div>
+            </div>
+            <div class="ff-price-card">
+              <div class="ff-price-row"><div class="ff-price-key"><span class="ff-price-icon neutral"><img src="assets/figma-report/plan-file.svg" alt=""/></span><b><span class="zh">商家给予价</span><span class="en">Price offered by the seller</span></b></div><div class="ff-price-val">¥5.82w<small><span class="zh">较合理价约高 ¥0.78w</span><span class="en">About ¥0.78w higher than reasonable price</span></small></div></div>
+              <div class="ff-price-row amber"><div class="ff-price-key"><span class="ff-price-icon amber"><img src="assets/figma-report/plan-target.svg" alt=""/></span><b><span class="zh">尽力争取价</span><span class="en">Negotiable price</span></b></div><div class="ff-price-val">¥4.85w</div></div>
+              <div class="ff-price-row green"><div class="ff-price-key"><span class="ff-price-icon green"><img src="assets/figma-report/plan-check.svg" alt=""/></span><b><span class="zh">合理参考价</span><span class="en">Reference price</span></b></div><div class="ff-price-val">¥5.04w</div></div>
+              <div class="ff-price-row red"><div class="ff-price-key"><span class="ff-price-icon red"><img src="assets/figma-report/plan-alert.svg" alt=""/></span><b><span class="zh">低价警戒线</span><span class="en">Low price alert line</span></b></div><div class="ff-price-val">¥4.70w<small><span class="zh">以下需谨慎</span><span class="en">Exercise caution below this</span></small></div></div>
+            </div>
+            <div class="ff-reco"><span class="zh">建议先按 ¥4.85w 沟通，¥5.04w 内可接受；若低于 ¥4.70w，需重点核查减配、换料、增项和售后风险。</span><span class="en">It is recommended to start negotiations at ¥4.85w, acceptable within ¥5.04w; if below ¥4.70w, focus on checking for downgrades, material changes, additional items, and after-sales risks.</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bento">
+      <div class="bart reveal"><div class="rpt">
+        <div class="rpt-top"><span class="rt-menu" aria-hidden="true"><img src="assets/lucide/menu.svg" alt=""/></span><span class="rt-check"><img src="assets/figma-report/check-circle.svg" alt=""/></span><span class="rt-title"><span class="zh">完整体检结果</span><span class="en">Complete check results</span></span><button class="rt-action" type="button" aria-label="share"><img src="assets/figma-report/share.svg" alt=""/></button><button class="rt-action" type="button" aria-label="more"><img src="assets/lucide/more-horizontal.svg" alt=""/></button></div>
+        <div class="rpt-scroll">
+          <div class="rpt-verdict">
+            <div class="rv-row"><span class="rv-d">D</span>
+              <div><b><span class="zh">不建议直接签合同</span><span class="en">Don't sign as-is</span></b>
+                <div class="rv-tags"><span class="hot"><span class="zh">高风险</span><span class="en">High risk</span></span><span><span class="zh">综合评级 D</span><span class="en">Overall grade D</span></span></div>
+              </div>
+            </div>
+            <p><span class="zh">整体价格偏高，超市场均价的 23%。核心信息模糊存在中高风险。建议先补全关键信息、核对价格、把条款写进合同，再签更稳妥。</span><span class="en">Pricing runs ~23% above market average, and key specs are vague — medium-to-high risk. Complete the missing info, verify prices, and write the terms into the contract before signing.</span></p>
+          </div>
+          <section class="rpt-sec">
+            <header><span class="rpt-icirc"><img src="assets/figma-report/exact-v2/title-identified.svg" alt=""/></span><b><span class="zh">已识别内容</span><span class="en">Identified content</span></b><span class="rpt-chev"><img src="assets/figma-report/exact-v2/title-caret.svg" alt=""/></span></header>
+            <div class="rpt-bd">
+              <div class="rpt-stats">
+                <div><small><img src="assets/figma-report/file-search.svg" alt=""/><span class="zh">报价单页数</span><span class="en">Number of pages</span></small><b>6 <span class="zh">页</span><span class="en">pages</span></b></div>
+                <div><small><img src="assets/figma-report/target-small.svg" alt=""/><span class="zh">报价总金额</span><span class="en">Total amount</span></small><b>¥47,416</b></div>
+                <div><small><img src="assets/figma-report/target.svg" alt=""/><span class="zh">识别项目</span><span class="en">Identified items</span></small><b>43 <span class="zh">项</span><span class="en">items</span></b></div>
+              </div>
+              <div class="rpt-sub"><span class="zh">涉及空间</span><span class="en">Involved spaces</span></div>
+              <div class="rpt-pills"><span><span class="zh">玄关</span><span class="en">Entrance</span></span><span><span class="zh">客厅</span><span class="en">Living room</span></span><span><span class="zh">主卧</span><span class="en">Master bedroom</span></span><span><span class="zh">次卧</span><span class="en">Secondary bedroom</span></span><span><span class="zh">厨房</span><span class="en">Kitchen</span></span></div>
+              <div class="rpt-sub"><span class="zh">涉及关键词</span><span class="en">Involved keywords</span></div>
+              <div class="rpt-pills"><span><span class="zh">板材</span><span class="en">Board materials</span></span><span><span class="zh">五金</span><span class="en">Hardware</span></span><span><span class="zh">灯带</span><span class="en">LED strip</span></span><span><span class="zh">见光板</span><span class="en">Light panel</span></span><span><span class="zh">拉直器</span><span class="en">Straightener</span></span></div>
+            </div>
+          </section>
+          <section class="rpt-sec">
+            <header><span class="rpt-icirc"><img src="assets/figma-report/exact-v2/title-compare.svg" alt=""/></span><b><span class="zh">完整价格对比</span><span class="en">Complete price comparison</span></b><img class="rpt-title-info" src="assets/figma-report/exact-v2/title-compare-info.svg" alt=""/><span class="rpt-chev"><img src="assets/figma-report/exact-v2/title-caret.svg" alt=""/></span></header>
+            <div class="rpt-bd">
+              <p class="rpt-lead"><span class="zh">你花了 ¥47,416，商家实际花了多少？</span><span class="en">You spent ¥47,416, how much did the merchant actually spend?</span></p>
+              <div class="rpt-cost2">
+                <div class="c cost"><small><span class="zh">商家成本</span><span class="en">Merchant cost</span></small><b>¥33,200</b><i><span class="zh">材料+安装+设计+运输</span><span class="en">materials + install + design + shipping</span></i></div>
+                <div class="c prof"><small><span class="zh">利润范围</span><span class="en">Profit range</span></small><b>¥20,000–30,000</b></div>
+              </div>
+              <div class="rpt-barw"><span class="rpt-flag"><span class="zh">商家报价 ¥38,450</span><span class="en">Quoted ¥38,450</span></span><div class="rpt-bar"><i class="sa"></i><i class="sb"></i><i class="sc"></i></div><span class="rpt-dot"></span></div>
+              <div class="rpt-legend"><span><i style="background:#188038"></i><span class="zh">成本</span><span class="en">Cost</span></span><span><i style="background:#FFB800"></i><span class="zh">参考区间</span><span class="en">Reference band</span></span><span><i style="background:#F14141"></i><span class="zh">溢价</span><span class="en">Premium</span></span></div>
+            </div>
+          </section>
+          <section class="rpt-sec">
+            <header><span class="rpt-icirc is-risk"><img src="assets/figma-report/exact-v2/title-risk.svg" alt=""/></span><b><span class="zh">风险项</span><span class="en">Risk items</span></b><span class="rpt-chev"><img src="assets/figma-report/exact-v2/title-caret.svg" alt=""/></span></header>
+            <div class="rpt-risk">
+              <div class="rr-h"><b><span class="zh">板材牌子</span><span class="en">Board brand</span></b><span class="tag"><span class="zh">大量缺失</span><span class="en">Largely missing</span></span></div>
+              <div class="rr-bx"><p><span class="zh">可能为无品牌或杂牌产品，质量稳定性与安全性存在风险。</span><span class="en">Possibly unbranded or off-brand boards — quality consistency and safety are at risk.</span></p>
+                <div class="rr-adv"><span class="bk"><svg viewBox="0 0 12 14"><path d="M1.5 0h9A1.5 1.5 0 0 1 12 1.5V14l-6-3.4L0 14V1.5A1.5 1.5 0 0 1 1.5 0Z"/></svg><span class="zh">建议</span><span class="en">Advice</span></span><em><span class="zh">选用知名品牌</span><span class="en">use a known brand</span></em></div>
+              </div>
+            </div>
+            <div class="rpt-risk">
+              <div class="rr-h"><b><span class="zh">尾款比例</span><span class="en">Final-payment ratio</span></b><span class="tag"><span class="zh">严重过低</span><span class="en">Far too low</span></span></div>
+              <div class="rr-bx"><p><span class="zh">可能质量不过关、货不对板、交付延迟、售后无保障。</span><span class="en">Leaves you exposed to poor quality, wrong goods, late delivery and no after-sales leverage.</span></p>
+                <div class="rr-adv"><span class="bk"><svg viewBox="0 0 12 14"><path d="M1.5 0h9A1.5 1.5 0 0 1 12 1.5V14l-6-3.4L0 14V1.5A1.5 1.5 0 0 1 1.5 0Z"/></svg><span class="zh">建议</span><span class="en">Advice</span></span><em><span class="zh">至少10%</span><span class="en">keep at least 10% back</span></em></div>
+              </div>
+            </div>
+            <div class="rpt-risk">
+              <div class="rr-h"><b><span class="zh">环保等级</span><span class="en">Emission grade</span></b><span class="tag"><span class="zh">甲醛超标</span><span class="en">Formaldehyde risk</span></span></div>
+              <div class="rr-bx"><p><span class="zh">家中有孕妇、儿童及老年人，长期吸入有害物质可能存在致癌隐患。</span><span class="en">With pregnant women, children or elderly at home, long-term exposure carries serious health risks.</span></p>
+                <div class="rr-adv"><span class="bk"><svg viewBox="0 0 12 14"><path d="M1.5 0h9A1.5 1.5 0 0 1 12 1.5V14l-6-3.4L0 14V1.5A1.5 1.5 0 0 1 1.5 0Z"/></svg><span class="zh">建议</span><span class="en">Advice</span></span><em><span class="zh">至少ENF级</span><span class="en">ENF grade minimum</span></em></div>
+              </div>
+            </div>
+            <button class="rpt-copybtn" type="button"><span class="ic"><img src="assets/figma-report/exact-v2/copy-all.svg" alt=""/></span><span class="zh">复制全部</span><span class="en">Copy All</span></button>
+          </section>
+          <section class="rpt-sec">
+            <header><span class="rpt-icirc is-price"><img src="assets/figma-report/exact-v2/title-price.svg" alt=""/></span><b><span class="zh">价格建议</span><span class="en">Price Recommendation</span></b><span class="rpt-chev"><img src="assets/figma-report/exact-v2/title-caret.svg" alt=""/></span></header>
+            <div class="rpt-bd">
+              <div class="rpt-adv-h"><span class="aic"><svg viewBox="0 0 24 24"><path d="m3 8 6 6 4-4 8 8"/><path d="M15 18h6v-6"/></svg></span>
+                <div><b><span class="zh">建议砍价 · 价格偏高</span><span class="en">Negotiate — priced high</span></b><small><span class="zh">重点锁定配置、合同与落地服务</span><span class="en">Lock down specs, contract and delivery</span></small></div>
+              </div>
+              <div class="rpt-lad"><span class="li" style="background:#F7F7F7"><img src="assets/figma-report/file.svg" alt=""/></span><span class="lk"><span class="zh">商家给予价</span><span class="en">Seller's offer</span></span><span class="lr"><span class="lv" style="color:#1D1D1F">¥5.82w</span><span class="ls"><span class="zh">较合理价约高 ¥0.78w</span><span class="en">about ¥0.78w over fair</span></span></span></div>
+              <div class="rpt-lad"><span class="li" style="background:#FEF5E5"><img src="assets/figma-report/target.svg" alt=""/></span><span class="lk"><span class="zh">尽力争取价</span><span class="en">Push-for price</span></span><span class="lr"><span class="lv" style="color:#F17105">¥4.85w</span></span></div>
+              <div class="rpt-lad"><span class="li" style="background:#EEF7EF"><img src="assets/figma-report/check-circle.svg" alt=""/></span><span class="lk"><span class="zh">合理参考价</span><span class="en">Fair reference</span></span><span class="lr"><span class="lv" style="color:#2BA245">¥5.04w</span></span></div>
+              <div class="rpt-lad"><span class="li" style="background:#FFF2F2"><img src="assets/figma-report/alert-triangle.svg" alt=""/></span><span class="lk"><span class="zh">低价警戒线</span><span class="en">Low-price alert</span></span><span class="lr"><span class="lv" style="color:#EB4436">¥4.70w</span><span class="ls" style="color:#EB4436"><span class="zh">以下需谨慎</span><span class="en">caution below</span></span></span></div>
+              <p class="rpt-note"><span class="zh">建议先按 <span class="o">¥4.85w</span> 沟通，<span class="g">¥5.04w</span> 内可接受；若低于 <span class="r">¥4.70w</span>，需重点核查减配、换料、增项和售后风险。</span><span class="en">Open at <span class="o">¥4.85w</span>, accept within <span class="g">¥5.04w</span>; below <span class="r">¥4.70w</span>, check hard for downgrades, material swaps, add-ons and after-sales risk.</span></p>
+            </div>
+          </section>
+          <section class="rpt-sec">
+            <header><span class="rpt-icirc is-composite"><img src="assets/figma-report/exact-v2/title-script.svg" alt=""/></span><b><span class="zh">砍价话术</span><span class="en">Bargaining script</span></b><span class="rpt-chev"><img src="assets/figma-report/exact-v2/title-caret.svg" alt=""/></span></header>
+            <div class="rpt-bd">
+              <div class="rpt-quote"><span class="qm"><svg viewBox="0 0 14 11"><path d="M0 11V6.2C0 2.8 1.9.7 5.2 0l.9 1.9C4.2 2.6 3.2 3.7 3 5h3v6H0Zm8 0V6.2C8 2.8 9.9.7 13.2 0l.8 1.9c-1.9.7-2.9 1.8-3.1 3.1h3v6H8Z"/></svg></span><span><span class="zh">见光板报 160，市场 120–150；五金升级 1200，我了解 800 能做。这几项按合理价走，总价定 ¥43,000，今天就签。</span><span class="en">"Exposed panel quoted at 160 — market is 120–150. Hardware upgrade 1,200 — I know 800 gets it done. Price these fairly and we close at ¥43,000 today."</span></span></div>
+              <div class="rpt-why">
+                <button class="vw" type="button" aria-expanded="false"><span class="zh">查看</span><span class="en">view</span></button>
+                <div class="wt"><span class="zh">砍到 <b>¥60,000</b>，他不会亏</span><span class="en">Even at <b>¥60,000</b>, he still profits</span></div>
+                <div class="rpt-why-details"><div>
+                  <div class="ws"><span class="zh">为什么你可以这样开口 ——</span><span class="en">Why you can open like this —</span></div>
+                  <ul>
+                    <li><span class="zh">商家成本约 ¥52,400，你出 ¥60,000，他还能赚 ¥7,600。</span><span class="en">His cost is about ¥52,400 — at ¥60,000 he still makes ¥7,600.</span></li>
+                    <li><span class="zh">利润率降到 14%，仍在行业正常范围内。</span><span class="en">Margin drops to 14% — still within the normal industry range.</span></li>
+                    <li><span class="zh">这几项确实高于市场，他直接拒单的可能性很低。</span><span class="en">These items really are above market — outright rejection is unlikely.</span></li>
+                  </ul>
+                </div></div>
+              </div>
+              <button class="rpt-copyrow" type="button"><img src="assets/figma-report/exact-v2/copy-all.svg" alt=""/><span class="zh">复制全部</span><span class="en">Copy All</span></button>
+            </div>
+          </section>
+          <div>
+            <b class="rpt-x-t"><span class="zh">继续了解这个报价单</span><span class="en">Keep exploring this quote</span></b>
+            <small class="rpt-x-s"><span class="zh">帮你更好的了解报价单更详细的内容</span><span class="en">More ways to dig into the details</span></small>
+            <button class="rpt-x" type="button"><span class="xic"><img src="assets/figma-report/chat.svg" alt=""/></span><span class="zh">配置信息及价格汇总</span><span class="en">Spec &amp; price summary</span></button>
+            <button class="rpt-x" type="button"><span class="xic"><img src="assets/figma-report/chat.svg" alt=""/></span><span class="zh">每个房间花了多少钱？</span><span class="en">What did each room cost?</span></button>
+            <button class="rpt-x" type="button"><span class="xic"><img src="assets/figma-report/chat.svg" alt=""/></span><span class="zh">商家成本是多少？</span><span class="en">What's the merchant's cost?</span></button>
+            <button class="rpt-x" type="button"><span class="xic"><img src="assets/figma-report/chat.svg" alt=""/></span><span class="zh">此报价单是否过度收费？</span><span class="en">Is this quote overcharging?</span></button>
+          </div>
+          <button class="rpt-share" type="button"><img src="assets/figma-report/share.svg" alt=""/><span class="zh">分享报告</span><span class="en">Share report</span></button>
+        </div>
+        <div class="rpt-bar2">
+          <button class="rpt-mini is-rating thumb-up" type="button" aria-label="like" aria-pressed="false"><img src="assets/figma-report/exact/footer-thumb.svg" alt=""/></button>
+          <button class="rpt-mini is-rating thumb-down" type="button" aria-label="dislike" aria-pressed="false"><img src="assets/figma-report/exact/footer-thumb.svg" alt=""/></button>
+          <button class="rpt-mini copy" type="button" aria-label="copy report"><img src="assets/figma-report/exact/footer-copy.svg" alt=""/></button>
+          <button class="rpt-mini bookmark" type="button" aria-label="bookmark" aria-pressed="false"><img src="assets/figma-report/exact/footer-bookmark.svg" alt=""/></button>
+          <button class="rpt-dl" type="button"><img src="assets/figma-report/exact/footer-download.svg" alt=""/><span class="zh">下载整份报告</span><span class="en">Download the full report</span></button>
+        </div>
+      </div></div>
+      <div class="btext reveal d1">
+        <h3><span class="zh">复杂的资料，<br>变成清楚的结论</span><span class="en">Complex documents become<br>clear conclusions</span></h3>
+        <p><span class="zh">一份报告说清四件事：该不该签、商家到底赚多少、风险藏在哪、砍价的话怎么说。</span><span class="en">One report answers four things: whether to sign, what the merchant really makes, where the risks hide, and exactly what to say when you bargain.</span></p>
+        <ul class="blist">
+          <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l5 5L20 7"/></svg></span><span class="zh">综合评级 D——不建议直接签合同，理由写明白</span><span class="en">Grade D — don't sign as-is, reasons stated</span></li>
+          <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l5 5L20 7"/></svg></span><span class="zh">成本拆解：你花 ¥47,416，商家成本 ¥33,200</span><span class="en">Cost breakdown: you pay ¥47,416, merchant cost ¥33,200</span></li>
+          <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l5 5L20 7"/></svg></span><span class="zh">风险逐条定位，砍价话术一键复制</span><span class="en">Risks pinned item by item; the bargaining script copies in one tap</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="bento flip" id="action-flow">
+      <div class="bart reveal"><div class="flow2">
+        <div class="ff-col">
+          <span class="ff"><svg viewBox="0 0 28 34" aria-hidden="true"><path fill="#E5322E" d="M6 2h13l6 6v21a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V5a3 3 0 0 1 3-3Z"/><path fill="#F4A6A4" d="M19 2 25 8h-4a2 2 0 0 1-2-2V2Z"/><text x="14" y="27" text-anchor="middle" fill="#fff" font-family="Arial,Helvetica,sans-serif" font-size="8" font-weight="800" letter-spacing=".3">PDF</text></svg></span>
+          <span class="ff"><svg viewBox="0 0 28 34" aria-hidden="true"><path fill="#2F6BFF" d="M6 2h13l6 6v21a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V5a3 3 0 0 1 3-3Z"/><path fill="#AEC7FF" d="M19 2 25 8h-4a2 2 0 0 1-2-2V2Z"/><circle cx="10" cy="15.5" r="2" fill="#fff"/><path fill="#fff" d="M6.5 26l4.5-5.5 2.8 3.2 2.5-3 5.2 5.3H6.5Z"/></svg></span>
+          <span class="ff"><svg viewBox="0 0 28 34" aria-hidden="true"><path fill="#1E9E5A" d="M6 2h13l6 6v21a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V5a3 3 0 0 1 3-3Z"/><path fill="#A6DCC0" d="M19 2 25 8h-4a2 2 0 0 1-2-2V2Z"/><text x="14" y="27" text-anchor="middle" fill="#fff" font-family="Arial,Helvetica,sans-serif" font-size="8" font-weight="800" letter-spacing=".3">XLS</text></svg></span>
+          <span class="ff"><svg viewBox="0 0 28 34" aria-hidden="true"><path fill="#F7941E" d="M6 2h13l6 6v21a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V5a3 3 0 0 1 3-3Z"/><path fill="#FCD39B" d="M19 2 25 8h-4a2 2 0 0 1-2-2V2Z"/><text x="14" y="27" text-anchor="middle" fill="#fff" font-family="Arial,Helvetica,sans-serif" font-size="8" font-weight="800" letter-spacing=".3">CSV</text></svg></span>
+          <span class="ff"><svg viewBox="0 0 28 34" aria-hidden="true"><path fill="#2F6BFF" d="M6 2h13l6 6v21a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V5a3 3 0 0 1 3-3Z"/><path fill="#AEC7FF" d="M19 2 25 8h-4a2 2 0 0 1-2-2V2Z"/><text x="14" y="27" text-anchor="middle" fill="#fff" font-family="Arial,Helvetica,sans-serif" font-size="8" font-weight="800" letter-spacing=".3">W</text></svg></span>
+        </div>
+        <div class="ff-mid">
+          <svg class="ff-links" viewBox="0 0 100 210" preserveAspectRatio="none" aria-hidden="true">
+            <path d="M2,20 C40,20 46,92 50,105"/>
+            <path d="M2,68 C40,68 47,99 50,105"/>
+            <path d="M2,105 C42,105 48,105 50,105"/>
+            <path d="M2,142 C40,142 47,111 50,105"/>
+            <path d="M2,190 C40,190 46,118 50,105"/>
+            <path class="emit" d="M50,105 C66,105 74,86 100,86"/>
+            <path class="emit" d="M50,105 C72,105 82,105 100,105"/>
+            <path class="emit" d="M50,105 C66,105 74,124 100,124"/>
+          </svg>
+          <div class="ff-turtle"><img src="assets/turtle-green.gif" alt=""/></div>
+        </div>
+        <div class="ff-report">
+          <div class="ff-offer-head">
+            <span class="ff-offer-ico"><span class="ff-trend" aria-hidden="true"><img src="assets/figma-report/bargain-trend-a.svg" alt=""/><img src="assets/figma-report/bargain-trend-b.svg" alt=""/></span></span>
+            <div class="ff-offer-copy">
+              <div class="ff-offer-title"><span class="zh">建议砍价</span><span class="en">Suggest bargaining</span><img src="assets/figma-report/bargain-dot.svg" alt=""/><span class="risk"><span class="zh">高</span><span class="en">high</span></span></div>
+              <p><span class="zh">重点锁定配置、合同与落地服务</span><span class="en">Focus on configuration, contract, and implementation services</span></p>
+            </div>
+          </div>
+          <div class="ff-price-card">
+            <div class="ff-price-row">
+              <div class="ff-price-key"><span class="ff-price-icon neutral"><img src="assets/figma-report/bargain-file.svg" alt=""/></span><b><span class="zh">商家给予价</span><span class="en">Seller's offer</span></b></div>
+              <div class="ff-price-val">¥5.82<span class="zh">万</span><span class="en">w</span><small><span class="zh">较合理价约高 ¥0.78万</span><span class="en">About ¥0.78w over fair</span></small></div>
+            </div>
+            <div class="ff-price-row amber">
+              <div class="ff-price-key"><span class="ff-price-icon amber"><img src="assets/figma-report/bargain-target.svg" alt=""/></span><b><span class="zh">尽力争取价</span><span class="en">Push-for price</span></b></div>
+              <div class="ff-price-val">¥4.85<span class="zh">万</span><span class="en">w</span></div>
+            </div>
+            <div class="ff-price-row green">
+              <div class="ff-price-key"><span class="ff-price-icon green"><img src="assets/figma-report/bargain-check.svg" alt=""/></span><b><span class="zh">合理参考价</span><span class="en">Fair reference</span></b></div>
+              <div class="ff-price-val">¥5.04<span class="zh">万</span><span class="en">w</span></div>
+            </div>
+            <div class="ff-price-row red">
+              <div class="ff-price-key"><span class="ff-price-icon red"><img src="assets/figma-report/bargain-alert.svg" alt=""/></span><b><span class="zh">低价警戒线</span><span class="en">Low-price alert</span></b></div>
+              <div class="ff-price-val">¥4.70<span class="zh">万</span><span class="en">w</span><small><span class="zh">以下需谨慎</span><span class="en">Caution below this</span></small></div>
+            </div>
+          </div>
+          <div class="ff-reco"><span class="zh">建议先按 ¥4.85万 沟通，¥5.04万 内可接受；若低于 ¥4.70万，需重点核查减配、换料、增项和售后风险。</span><span class="en">Open at ¥4.85w, accept within ¥5.04w; below ¥4.70w, check hard for downgrades, swaps and after-sales risk.</span></div>
+        </div>
+      </div></div>
+      <div class="btext reveal d1">
+        <h3><span class="zh">缺什么，就追问什么；<br>说完问题，给出行动</span><span class="en">It asks for what's missing —<br>then turns problems into action</span></h3>
+        <p><span class="zh">拍照、截图、PDF 丢进来就行。识别价格、配置与风险；信息不够就主动追问；最后给出区间、清单与话术。</span><span class="en">Photos, screenshots or PDFs — just drop them in. It reads price, configuration and risk, asks when info is missing, and hands back ranges, checklists and scripts.</span></p>
+        <ul class="blist">
+          <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l5 5L20 7"/></svg></span><span class="zh">01 上传资料——报价单、合同、图片</span><span class="en">01 Upload — quotes, contracts, images</span></li>
+          <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l5 5L20 7"/></svg></span><span class="zh">02 主动分析——识别价格、配置与风险</span><span class="en">02 Analyze — price, configuration, risk</span></li>
+          <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l5 5L20 7"/></svg></span><span class="zh">03 补齐信息——缺什么，就追问什么</span><span class="en">03 Fill gaps — ask about whatever is missing</span></li>
+          <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l5 5L20 7"/></svg></span><span class="zh">04 给出行动——区间、清单与谈价话术</span><span class="en">04 Act — ranges, checklists, scripts</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FILM ============ -->
+<section class="section" id="film" style="padding-top:30px;">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2><span class="zh">60 秒，看懂问龟</span><span class="en">Sixty seconds of Shellmind</span></h2>
+      <p><span class="zh">上传报价单之前，先花一分钟认识这只站在你这边的龟。</span><span class="en">Before you upload a quote, spend a minute with the turtle on your side.</span></p>
+    </div>
+    <div class="film reveal" id="filmBox">
+      <video id="wgFilm" src="assets/shellmind-ad.mp4" preload="metadata" playsinline controls></video>
+    </div>
+  </div>
+</section>
+<div class="film-cursor" id="filmCursor" aria-hidden="true"><span class="tri"></span><span class="zh">播放视频</span><span class="en">Play video</span></div>
+
+<!-- ============ ROI CALCULATOR ============ -->
+<section class="section" id="calc" style="padding-top:30px;">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2><span class="zh">看看问龟能帮你省多少</span><span class="en">See how much Shellmind<br>can save you</span></h2>
+      <p><span class="zh">拖动滑块选报价单总额，先估个可优化空间。上传后 AI 逐项核对，给你精确到每一项的方案。</span><span class="en">Drag the slider to your quote total for a rough estimate. Once uploaded, the AI checks line by line.</span></p>
+    </div>
+    <div class="calc-card reveal">
+      <div class="calc-top">
+        <div class="lab"><span class="zh">报价单总额</span><span class="en">Quote total</span></div>
+        <div class="val" id="cVal"><small>¥</small>90,000</div>
+      </div>
+      <input type="range" class="rng" id="cRange" min="10000" max="200000" step="2000" value="90000" aria-label="Quote total" />
+      <div class="calc-ends"><span><span class="zh">¥1 万</span><span class="en">¥10k</span></span><span><span class="zh">¥20 万+</span><span class="en">¥200k+</span></span></div>
+      <div class="calc-stats">
+        <div class="calc-stat save"><div class="k"><span class="zh">预计可优化空间</span><span class="en">Est. savings room</span></div><div class="v" id="cSave">¥10,800–13,500</div></div>
+        <div class="calc-stat"><div class="k"><span class="zh">识别风险 / 异常项</span><span class="en">Risk items found</span></div><div class="v"><span id="cRisk">8</span><small style="font-size:.4em;"> <span class="zh">项</span><span class="en">items</span></small></div></div>
+        <div class="calc-stat"><div class="k"><span class="zh">出初步诊断</span><span class="en">First diagnosis</span></div><div class="v"><span class="zh">约 30<small style="font-size:.4em;"> 秒</small></span><span class="en">~30<small style="font-size:.4em;">s</small></span></div></div>
+      </div>
+      <div class="calc-foot">
+        <div class="calc-checks">
+          <span><svg viewBox="0 0 24 24"><path d="M5 13l5 5L20 7"/></svg><span class="zh">先看诊断再决定</span><span class="en">Diagnosis first</span></span>
+          <span><svg viewBox="0 0 24 24"><path d="M5 13l5 5L20 7"/></svg><span class="zh">完整报告仅 ¥29.9</span><span class="en">Full report ¥29.9</span></span>
+        </div>
+      </div>
+    </div>
+    <div class="calc-note"><span class="zh">* 该区间基于问龟已审核的真实报价数据估算——即我们目前收到的报价单里，帮用户省下的金额范围；你的实际可省金额，以上传后逐项分析为准。</span><span class="en">* The range is grounded in the real quotes Shellmind has already reviewed — the savings we've found across the quotes we currently hold; your actual savings depend on the line-by-line analysis after upload.</span></div>
+  </div>
+</section>
+
+<!-- ============ REAL DATA ============ -->
+<section class="section" id="data">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2 class="wfade" data-wfade><span class="zh">不是一个概念。<br>是真实发生的改变。</span><span class="en">Not a concept.<br>A change that is really happening.</span></h2>
+    </div>
+    <div class="stats">
+      <div class="stat reveal"><div class="n" data-count="2000" data-suffix="+">0</div><div class="t"><span class="zh">户家庭获得 AI 装修咨询</span><span class="en">households consulted</span></div><div class="c"><span class="zh">从预算到验收的真实提问</span><span class="en">Real questions, budget to acceptance</span></div></div>
+      <div class="stat reveal d1"><div class="n" data-count="2600" data-suffix="+">0</div><div class="t"><span class="zh">份报价单与合同被审核</span><span class="en">quotes &amp; contracts reviewed</span></div><div class="c"><span class="zh">逐项识别价格、配置与风险</span><span class="en">Line-by-line price, spec &amp; risk</span></div></div>
+      <div class="stat reveal d2"><div class="n" data-count="98" data-suffix="%" data-small="1">0</div><div class="t"><span class="zh">真实用户好评率</span><span class="en">genuine satisfaction</span></div><div class="c"><span class="zh">来自服务后的真实反馈</span><span class="en">From post-service feedback</span></div></div>
+      <div class="stat reveal d3"><div class="n" data-count="60" data-suffix="%" data-small="1">0</div><div class="t"><span class="zh">用户主动要求推荐材料</span><span class="en">asked for material picks</span></div><div class="c"><span class="zh">信任从审核延伸到选择</span><span class="en">Trust extends from review to choice</span></div></div>
+    </div>
+    <div class="data-note"><span class="zh">数据截至 2026.07 · 来自问龟AI真实服务记录</span><span class="en">Data as of July 2026 · from Shellmind's real service records</span></div>
+
+    <div class="caro reveal">
+      <button class="caro-btn prev" aria-label="上一个"><img src="assets/lucide/chevron-left.svg" alt=""/></button>
+      <div class="slides">
+        <div class="slide is-active">
+          <div class="case">CASE 01 · <span class="zh">福建福州 · 全屋定制报价审核</span><span class="en">Fuzhou · whole-home quote review</span></div>
+          <div class="big"><span class="zh">省下 ¥52,200</span><span class="en">Saved ¥52,200</span></div>
+          <q><span class="zh">商家原报价 ¥142,600，审核后 ¥90,400 成交。找到真正贵的项目，而不是盲目砍总价。</span><span class="en">Quoted ¥142,600; closed at ¥90,400 after review. We found what was genuinely overpriced instead of blindly slashing the total.</span></q>
+          <div class="who"><img class="av" src="assets/avatar-1.jpg" alt="" /><span class="zh">全屋定制业主 · 2026.05</span><span class="en">Custom-cabinetry owner · May 2026</span></div>
+        </div>
+        <div class="slide">
+          <div class="case">CASE 02 · <span class="zh">福建福清 · 整装报价审核</span><span class="en">Fuqing · full-package review</span></div>
+          <div class="big"><span class="zh">砍下 ¥8,200</span><span class="en">Cut ¥8,200</span></div>
+          <q><span class="zh">本来第二天就要签了，报告发现灯带和五金重复计费。照着话术原话发过去，商家真的松口了。</span><span class="en">I was signing the next day; the report caught light strips and hardware billed twice. I sent the script word for word — and they budged.</span></q>
+          <div class="who"><img class="av" src="assets/avatar-2.jpg" alt="" /><span class="zh">整装业主 · 2026.06</span><span class="en">Full-package owner · June 2026</span></div>
+        </div>
+        <div class="slide">
+          <div class="case">CASE 03 · <span class="zh">广东东莞 · 定制柜报价审核</span><span class="en">Dongguan · cabinet quote review</span></div>
+          <div class="big ink"><span class="zh">底气，是算出来的</span><span class="en">Confidence, computed</span></div>
+          <q><span class="zh">报告把成本和利润算得明明白白，知道商家底线在哪，砍价时特别有底气，再也不怕被当韭菜。</span><span class="en">Cost and margin were laid out plainly. Knowing the merchant's floor, I bargained with real confidence — no more feeling fleeced.</span></q>
+          <div class="who"><img class="av" src="assets/avatar-3.jpg" alt="" /><span class="zh">定制柜业主 · 2026.06</span><span class="en">Cabinet owner · June 2026</span></div>
+        </div>
+      </div>
+      <button class="caro-btn next" aria-label="下一个"><img src="assets/lucide/chevron-right.svg" alt=""/></button>
+      <div class="dots" id="caroDots"><i class="on"></i><i></i><i></i></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ VISION ============ -->
+<section class="section" id="vision" style="padding-top:30px;">
+  <div class="wrap">
+    <div class="sec-head left">
+      <h2><span class="zh">今天，看懂一张报价单。<br>明天，陪你装完整个家。</span><span class="en">Today, make sense of one quote.<br>Tomorrow, renovate the whole home with you.</span></h2>
+    </div>
+    <div class="vision">
+      <div class="vis now reveal">
+        <div class="vis-ic"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path opacity=".4" d="M20 8.5v7c0 3-1.75 4.5-4.5 4.5h-7C5.75 20 4 18.5 4 15.5v-7C4 5.5 5.75 4 8.5 4h7C18.25 4 20 5.5 20 8.5Z"/><path d="M15.5 10.25h-7a.75.75 0 0 1 0-1.5h7a.75.75 0 0 1 0 1.5ZM12.5 14.25h-4a.75.75 0 0 1 0-1.5h4a.75.75 0 0 1 0 1.5Z"/></svg></div>
+        <div class="tag">NOW</div>
+        <h3><span class="zh">报价与合同</span><span class="en">Quotes &amp; contracts</span></h3>
+        <p><span class="zh">看懂价格，识别风险。从一张报价单开始，先守住最容易被多收钱的环节。</span><span class="en">Understand prices, spot risks — starting where you're most likely to be overcharged.</span></p>
+      </div>
+      <div class="vis next reveal d1">
+        <div class="vis-ic"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path opacity=".4" d="M20.83 8.01 14.28 3.4c-1.35-.94-3.31-.89-4.61.11L4.02 8.01c-.86.67-1.55 2.06-1.55 3.14v6.24c0 2.19 1.78 3.97 3.97 3.97h11.12c2.19 0 3.97-1.78 3.97-3.97v-6.13c0-1.15-.76-2.6-1.67-3.24Z"/><path d="M12 18.25a.75.75 0 0 1-.75-.75v-3a.75.75 0 0 1 1.5 0v3a.75.75 0 0 1-.75.75Z"/></svg></div>
+        <div class="tag">NEXT</div>
+        <h3><span class="zh">全程装修管家</span><span class="en">Full-journey concierge</span></h3>
+        <p><span class="zh">预算、材料、进度、验收——每一步都有依据、有提醒、有人帮你盯。</span><span class="en">Budget, materials, progress, acceptance — every step with reasons, reminders and a second pair of eyes.</span></p>
+      </div>
+      <div class="vis future reveal d2">
+        <div class="vis-ic"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path opacity=".4" d="M20 9.5v6c0 3-1.75 4.5-4.5 4.5h-7C5.75 20 4 18.5 4 15.5v-6h16Z"/><path d="M21 6.75v.9c0 1.24-.56 2.35-2.28 2.35H5.28C3.5 10 3 8.89 3 7.65v-.9C3 5.51 3.56 4.4 5.28 4.4h13.44C20.44 4.4 21 5.51 21 6.75ZM14 14.75h-4a.75.75 0 0 1 0-1.5h4a.75.75 0 0 1 0 1.5Z"/></svg></div>
+        <div class="tag">FUTURE</div>
+        <h3><span class="zh">家的长期档案</span><span class="en">The home's long-term archive</span></h3>
+        <p><span class="zh">持续记住并服务每个家——每个决定、每份合同，长期留存、随时可查。</span><span class="en">Remembering and serving every home — every decision and contract, kept and searchable.</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section class="section" id="faq" style="padding-top:40px;">
+  <div class="wrap faq-grid">
+    <div class="faq-card reveal">
+      <h2><span class="zh">有问题？<br>这里有答案。</span><span class="en">Have questions?<br>Find answers.</span></h2>
+      <a class="btn btn-ghost js-comm" href="#" style="background:rgba(255,255,255,.8);"><img class="btn-icon" src="assets/lucide/users-round.svg" alt=""/><span class="zh">加入业主社区</span><span class="en">Join the community</span></a>
+    </div>
+    <div>
+      <div class="faq open">
+        <button class="faq-q"><span class="zh">问龟到底是什么？</span><span class="en">What exactly is Shellmind?</span><span class="pm"><img src="assets/lucide/plus.svg" alt=""/></span></button>
+        <div class="faq-a"><p><span class="zh">一个站在消费者一侧的 AI 装修管家。上传报价单或合同，它逐项读懂、对比行情、指出风险，并给出可以直接拿去谈的区间和话术——不替你决定，但让你知道为什么。</span><span class="en">A renovation AI concierge on the consumer's side. Upload a quote or contract and it reads every line, benchmarks the market, flags risks, and hands you ranges and scripts you can negotiate with — it doesn't decide for you, it lets you know why.</span></p></div>
+      </div>
+      <div class="faq">
+        <button class="faq-q"><span class="zh">支持哪些类型的报价单？</span><span class="en">What kinds of quotes are supported?</span><span class="pm"><img src="assets/lucide/plus.svg" alt=""/></span></button>
+        <div class="faq-a"><p><span class="zh">全屋定制、整装、局部装修都支持。图片、手机截图、PDF 均可识别，多页报价单一次读完，无需手动录入。</span><span class="en">Custom cabinetry, full-package and partial remodels. Images, screenshots and PDFs are all recognized; multi-page quotes are read in one pass.</span></p></div>
+      </div>
+      <div class="faq">
+        <button class="faq-q"><span class="zh">结果准吗？真能省下来？</span><span class="en">Is it accurate? Will I really save?</span><span class="pm"><img src="assets/lucide/plus.svg" alt=""/></span></button>
+        <div class="faq-a"><p><span class="zh">问龟基于大量真实报价与当地行情给出区间与建议，作为谈判的有力依据。能省多少取决于商家与沟通——但 2,600+ 份审核的平均结果，已经写在上面的真实数据里。</span><span class="en">Shellmind draws on a large base of real quotes and local rates. How much you save depends on the merchant and the conversation — but the averages across 2,600+ reviews are in the Real Data above.</span></p></div>
+      </div>
+      <div class="faq">
+        <button class="faq-q"><span class="zh">一定要付费吗？</span><span class="en">Do I have to pay?</span><span class="pm"><img src="assets/lucide/plus.svg" alt=""/></span></button>
+        <div class="faq-a"><p><span class="zh">不用。免费诊断就能看清整体风险与方向；需要成本拆解、优化清单和砍价话术时，再按份解锁完整报告（¥29.9），不订阅、不自动续费。</span><span class="en">No. The free diagnosis shows overall risk and direction; unlock the full report (¥29.9 per quote) only when you need the cost breakdown, checklist and scripts. No subscription.</span></p></div>
+      </div>
+      <div class="faq">
+        <button class="faq-q"><span class="zh">我的报价单数据安全吗？</span><span class="en">Is my data safe?</span><span class="pm"><img src="assets/lucide/plus.svg" alt=""/></span></button>
+        <div class="faq-a"><p><span class="zh">上传的资料仅用于本次分析，不分享给任何商家或第三方，可随时删除。（正式上线以问龟隐私政策为准。）</span><span class="en">Uploads are used only for your analysis, never shared with merchants or third parties, and deletable anytime. (The official privacy policy governs at launch.)</span></p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FINAL CTA ============ -->
+<section class="final" id="final">
+  <div class="wrap">
+    <h2 class="wfade" data-wfade><span class="zh">下一次装修，先问问龟。</span><span class="en">Next time you renovate,<br>ask Shellmind first.</span></h2>
+    <p class="reveal"><span class="zh">让每个装修决定，都有依据。</span><span class="en">Let every renovation decision rest on solid grounds.</span></p>
+    <div class="hero-cta reveal d1">
+      <a class="btn btn-black js-mp" data-mp="#小程序://问龟AI/I8z8ZF5zycwyKle" href="#"><img class="btn-icon" src="assets/lucide/external-link.svg" alt=""/><span class="zh">打开微信小程序</span><span class="en">Open WeChat mini program</span></a>
+      <a class="btn btn-ghost js-soon" href="#"><img class="btn-icon" src="assets/lucide/monitor-down.svg" alt=""/><span class="zh">获取电脑端入口</span><span class="en">Get the desktop link</span></a>
+    </div>
+    <p style="font-size:12px;color:var(--faint);margin-top:18px;" class="reveal d2"><span class="zh">上传报价单，免费问装修问题，随时查看自己的装修档案。</span><span class="en">Upload a quote, ask renovation questions free, and check your archive anytime.</span></p>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="foot">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <img src="assets/wg-white.png" alt="Shellmind" />
+        <p><span class="zh">问龟AI · 面向中国家庭的装修AI管家。让装修，不再靠运气。</span><span class="en">Shellmind — a renovation AI concierge for Chinese households. Renovation, no longer left to luck.</span></p>
+      </div>
+      <div class="col">
+        <h4><span class="zh">产品</span><span class="en">Product</span></h4>
+        <a href="#product"><span class="zh">全屋定制报价审核</span><span class="en">Quote review</span></a>
+        <a href="#calc"><span class="zh">省钱预估器</span><span class="en">ROI calculator</span></a>
+        <a href="#final"><span class="zh">微信小程序</span><span class="en">WeChat Mini Program</span></a>
+        <a href="#final"><span class="zh">电脑端 Web</span><span class="en">Desktop · Web</span></a>
+      </div>
+      <div class="col">
+        <h4><span class="zh">关于</span><span class="en">About</span></h4>
+        <a href="#why"><span class="zh">核心理念</span><span class="en">Philosophy</span></a>
+        <a href="#data"><span class="zh">真实数据</span><span class="en">Real data</span></a>
+        <a href="#faq"><span class="zh">常见问题</span><span class="en">FAQ</span></a>
+        <a href="#" class="js-comm"><span class="zh">加入社区</span><span class="en">Community</span></a>
+        <a href="#"><span class="zh">合作联系</span><span class="en">Partnership</span></a>
+      </div>
+    </div>
+    <div class="foot-bot">
+      <div>© 2026 SHELLMIND · 问龟AI</div>
+      <a class="totop" href="#top"><span class="zh">回到顶部</span><span class="en">Back to top</span> ↑</a>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/gsap.min.js"></script>
+<script src="assets/ScrollTrigger.min.js"></script>
+<script>
+window.__WG={};
+window.__GSAP_MODE=!!(window.gsap&&window.ScrollTrigger)
+  &&!matchMedia('(prefers-reduced-motion:reduce)').matches&&('IntersectionObserver' in window);
+// ============ language (browser default, persisted) ============
+(function(){
+  const root=document.documentElement, btns=document.querySelectorAll('.langtoggle button');
+  function apply(l){l=l==='en'?'en':'zh';root.setAttribute('data-lang',l);
+    root.setAttribute('lang',l==='en'?'en':'zh-CN');
+    btns.forEach(b=>b.classList.toggle('on',b.dataset.lang===l));
+    try{localStorage.setItem('wg_lang',l);}catch(e){}}
+  let s=null;try{s=localStorage.getItem('wg_lang');}catch(e){}
+  apply(s||(((navigator.language||'').toLowerCase().indexOf('zh')===0)?'zh':'en'));
+  btns.forEach(b=>b.addEventListener('click',()=>apply(b.dataset.lang)));
+})();
+
+// ============ word-fade prep (per language span) ============
+document.querySelectorAll('[data-wfade]').forEach(h=>{
+  h.querySelectorAll(':scope > .zh, :scope > .en').forEach(langSpan=>{
+    const frag=document.createDocumentFragment();
+    langSpan.childNodes.forEach(node=>{
+      if(node.nodeType===3){
+        const parts=node.textContent.split(/(\s+)/);
+        parts.forEach(p=>{
+          if(!p)return;
+          if(/^\s+$/.test(p)){frag.appendChild(document.createTextNode(p));return;}
+          // CJK: split per character; latin: per word
+          if(/[一-鿿]/.test(p)){
+            [...p].forEach(ch=>{const s=document.createElement('span');s.className='w';s.textContent=ch;frag.appendChild(s);});
+          }else{const s=document.createElement('span');s.className='w';s.textContent=p;frag.appendChild(s);}
+        });
+      }else{frag.appendChild(node.cloneNode(true));}
+    });
+    langSpan.innerHTML='';langSpan.appendChild(frag);
+  });
+});
+
+// ============ reveal & word-fade (visibility-gated so hidden tabs never render blank) ============
+(function(){
+  if(window.__GSAP_MODE)return; // GSAP orchestrator owns reveals
+  const html=document.documentElement;
+  function stagger(h){const ws=h.querySelectorAll('.w');ws.forEach((w,i)=>w.style.transitionDelay=(i*0.028)+'s');h.classList.add('in');}
+  function enable(already){
+    if(html.classList.contains('js-anim'))return;
+    const vh=window.innerHeight||html.clientHeight;
+    if(already){document.querySelectorAll('.reveal').forEach(el=>{const r=el.getBoundingClientRect();if(r.top<vh&&r.bottom>0)el.classList.add('in');});}
+    html.classList.add('js-anim');
+    const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.12,rootMargin:'0px 0px -6% 0px'});
+    document.querySelectorAll('.reveal:not(.in)').forEach(el=>io.observe(el));
+    const wio=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){stagger(e.target);wio.unobserve(e.target);}});},{threshold:.4});
+    document.querySelectorAll('.wfade:not(.in)').forEach(el=>wio.observe(el));
+    if(!already){requestAnimationFrame(()=>{const hh=window.innerHeight;
+      document.querySelectorAll('.reveal:not(.in)').forEach(el=>{const r=el.getBoundingClientRect();if(r.top<hh&&r.bottom>0)el.classList.add('in');});
+      document.querySelectorAll('.wfade:not(.in)').forEach(el=>{const r=el.getBoundingClientRect();if(r.top<hh&&r.bottom>0)stagger(el);});});}
+  }
+  if(!('IntersectionObserver' in window)||matchMedia('(prefers-reduced-motion:reduce)').matches){
+    document.querySelectorAll('.wfade').forEach(h=>h.classList.add('in'));return;}
+  if(document.visibilityState==='visible'){enable(false);}
+  else{document.querySelectorAll('.wfade').forEach(h=>h.classList.add('in'));
+    document.addEventListener('visibilitychange',function onv(){if(document.visibilityState==='visible'){document.removeEventListener('visibilitychange',onv);enable(true);}});}
+})();
+
+// ============ typewriter hero + chat sequence ============
+(function(){
+  const h1=document.getElementById('typeH1'); if(!h1)return;
+  const spans=[...h1.querySelectorAll(':scope > span.zh, :scope > span.en')];
+  const data=new Map();
+  spans.forEach(sp=>{
+    const toks=[];
+    sp.childNodes.forEach(n=>{
+      if(n.nodeType===3){[...n.textContent].forEach(c=>toks.push(c));}
+      else if(n.tagName==='BR'){toks.push('\n');}
+      else{[...n.textContent].forEach(c=>toks.push(c));}
+    });
+    data.set(sp,toks);
+  });
+  const esc=c=>c==='&'?'&amp;':(c==='<'?'&lt;':c);
+  function render(sp,count,withCaret){
+    const toks=data.get(sp);let html='';
+    toks.slice(0,count).forEach(t=>{html+=(t==='\n')?'<br>':esc(t);});
+    sp.innerHTML=html+(withCaret?'<i class="caret"></i>':'');
+  }
+  function full(){spans.forEach(sp=>render(sp,data.get(sp).length,false));}
+  function activeSpan(){
+    const lang=document.documentElement.getAttribute('data-lang')||'zh';
+    return spans.find(sp=>sp.classList.contains(lang));
+  }
+  // Antigravity-style variable rhythm: spaces fly, punctuation breathes
+  function delayFor(t){
+    if(t===' ')return 18;
+    if(t==='-'||t==='—'||t==='–')return 110;
+    if(t===','||t==='，'||t==='、')return 140;
+    if(t==='.'||t==='。'||t==='？'||t==='?'||t==='！'||t==='!')return 150;
+    if(t==='\n')return 160;
+    return 38+Math.random()*24;
+  }
+  let timer=null;
+  function type(){
+    clearTimeout(timer);
+    const active=activeSpan();
+    spans.forEach(sp=>{if(sp!==active)render(sp,data.get(sp).length,false);});
+    if(!active)return;
+    const toks=data.get(active);let i=0;
+    (function step(){
+      render(active,i,true);
+      if(i<toks.length){
+        const t=toks[i];i++;
+        timer=setTimeout(step,delayFor(t));
+      }else{
+        if(window.__WG.onTypeDone){const cb=window.__WG.onTypeDone;window.__WG.onTypeDone=null;cb();}
+        timer=setTimeout(()=>render(active,toks.length,false),1400);
+      }
+    })();
+  }
+  // -------- chat sequence: greeting → user types in the input → send → agent card --------
+  function playChat(){
+    const card=document.getElementById('agentCard');
+    const greet=document.querySelector('.chatcard .msg.ai');
+    const user=document.querySelector('.chatcard .msg.user');
+    const uf=document.getElementById('userFile');
+    if(!card||!greet||!user)return;
+    if(playChat.gen==null)playChat.gen=0;
+    const gen=++playChat.gen;                         // each run cancels the previous run's pending steps
+    const setTimeout=(fn,ms)=>window.setTimeout(()=>{if(gen===playChat.gen)fn();},ms);  // guarded (shadows global)
+    const rows=[...card.querySelectorAll('.arow')];
+    const res=card.querySelector('.pr');
+    const ph=document.querySelector('.chatcard .inp .ph');
+    const phSpans=ph?[...ph.querySelectorAll('span')]:[];
+    phSpans.forEach(sp=>{if(sp.dataset.ph==null)sp.dataset.ph=sp.textContent;});
+    const placeholders=phSpans.map(sp=>sp.dataset.ph);   // stable source — immune to mid-typed leftovers on loop
+    const send=document.querySelector('.chatcard .inp .send');
+    const q={zh:'刚拿到全屋定制报价 ¥85,500，帮我看看贵不贵？',en:'Just got a custom-cabinetry quote at ¥85,500 — is it fair?'};
+    card.classList.add('working');
+    setTimeout(()=>greet.classList.add('show'),350);
+    setTimeout(()=>{
+      if(!phSpans.length){uf&&uf.classList.add('show');setTimeout(()=>user.classList.add('show'),240);setTimeout(()=>{card.classList.add('show');typeRow(0);},600);return;}
+      ph.classList.add('typingtext');
+      let i=0;const max=Math.max(q.zh.length,q.en.length);
+      (function ti(){
+        i++;
+        phSpans.forEach(sp=>{const t=sp.classList.contains('zh')?q.zh:q.en;
+          sp.innerHTML=t.slice(0,i)+'<i class="caret"></i>';});
+        if(i<max){setTimeout(ti,42);}
+        else{
+          setTimeout(()=>{
+            send&&send.classList.add('pulse');
+            setTimeout(()=>{
+              send&&send.classList.remove('pulse');
+              phSpans.forEach((sp,j)=>{sp.textContent=placeholders[j];});
+              ph.classList.remove('typingtext');
+              uf&&uf.classList.add('show');
+              setTimeout(()=>user.classList.add('show'),240);
+              setTimeout(()=>{card.classList.add('show');typeRow(0);},550);
+            },280);
+          },320);
+        }
+      })();
+    },1300);
+    function typeRow(k){
+      if(k>=rows.length){card.classList.remove('working');card.classList.add('done','collapsed');res&&res.classList.add('on');
+        requestAnimationFrame(()=>{const bd=res&&res.closest('.bd');if(bd)bd.scrollTo({top:bd.scrollHeight,behavior:'smooth'});});
+        scheduleLoop();return;}
+      const r=rows[k];r.classList.add('on');
+      const sp2=[...r.querySelectorAll('.tx span')];
+      const fulls=sp2.map(sp=>sp.dataset.t||sp.textContent);
+      sp2.forEach(sp=>sp.textContent='');
+      let i=0;const max=Math.max.apply(null,fulls.map(f=>f.length));
+      (function st(){
+        i++;sp2.forEach((sp,j)=>sp.textContent=fulls[j].slice(0,i));
+        if(i<max){setTimeout(st,34);}
+        else{setTimeout(()=>typeRow(k+1),340);}
+      })();
+    }
+  }
+  window.__WG.typeHero=type; window.__WG.fullHero=full; window.__WG.playChat=playChat;
+
+  // -------- loop the chat demo: replay the whole sequence on a gentle cadence --------
+  let loopTimer=null, chatInView=true, chatResting=false;
+  const chatLoopEnabled=!matchMedia('(prefers-reduced-motion:reduce)').matches;
+  const HOLD_MS=6000, WIPE_MS=560;              // read the report, then fade out, then replay
+  function resetChat(){
+    const card=document.getElementById('agentCard'); if(!card)return;
+    const greet=document.querySelector('.chatcard .msg.ai');
+    const user=document.querySelector('.chatcard .msg.user');
+    const ph=document.querySelector('.chatcard .inp .ph');
+    greet&&greet.classList.remove('show');
+    user&&user.classList.remove('show');
+    const uf0=document.getElementById('userFile'); uf0&&uf0.classList.remove('show');
+    card.classList.remove('working','done','show','collapsed');
+    card.querySelectorAll('.arow').forEach(r=>r.classList.remove('on'));
+    const res=card.querySelector('.pr'); res&&res.classList.remove('on');
+    if(ph){ph.classList.remove('typingtext');ph.querySelectorAll('span').forEach(sp=>{if(sp.dataset.ph!=null)sp.textContent=sp.dataset.ph;});}
+  }
+  function loopReady(){return chatLoopEnabled&&chatInView&&document.visibilityState==='visible';}
+  function scheduleLoop(){
+    clearTimeout(loopTimer);
+    if(!chatLoopEnabled)return;
+    loopTimer=window.setTimeout(function(){
+      if(!loopReady()){chatResting=true;return;}   // rest in the finished state until it's back in view
+      resetChat();                                  // messages fade out via their CSS transition
+      loopTimer=window.setTimeout(function(){
+        if(!loopReady()){chatResting=true;return;}
+        playChat();
+      },WIPE_MS);
+    },HOLD_MS);
+  }
+  function kickIfResting(){ if(chatResting&&loopReady()){chatResting=false;resetChat();playChat();} }
+  const heroMedia=document.querySelector('.hero-media');
+  if(heroMedia&&'IntersectionObserver' in window){
+    new IntersectionObserver(function(es){chatInView=es[0].isIntersecting;kickIfResting();},{threshold:.35}).observe(heroMedia);
+  }
+  document.addEventListener('visibilitychange',kickIfResting);
+
+  window.__WG.renderEmpty=function(){const a=activeSpan();if(a)render(a,0,true);};
+  new MutationObserver(()=>{
+    if(document.visibilityState==='visible'){type();}else{full();}
+  }).observe(document.documentElement,{attributes:true,attributeFilter:['data-lang']});
+  if(window.__GSAP_MODE)return; // GSAP orchestrator drives the sequence
+  const reduced=matchMedia('(prefers-reduced-motion:reduce)').matches;
+  if(reduced||!('IntersectionObserver' in window)){full();return;}
+  function arm(){
+    window.__WG.renderEmpty();
+    setTimeout(type,380);
+    playChat();
+  }
+  if(document.visibilityState==='visible'){arm();}
+  else{full();
+    document.addEventListener('visibilitychange',function onv(){
+      if(document.visibilityState==='visible'){document.removeEventListener('visibilitychange',onv);arm();}});}
+})();
+
+// ============ rolling-text hover (nav links + every button) ============
+(function(){
+  const isIcon=n=> n.nodeType===1 && ((n.classList&&n.classList.contains('ar'))||n.tagName==='SVG'||n.tagName==='svg'||n.tagName==='IMG'||(n.querySelector&&n.querySelector('svg')));
+  document.querySelectorAll('.nav-links a, .btn').forEach(el=>{
+    if(el.dataset.roll)return;
+    const kids=[...el.childNodes];
+    const label=kids.filter(n=> !isIcon(n) && !(n.nodeType===3 && !n.textContent.trim()));
+    if(!label.length)return;
+    el.dataset.roll='1';
+    el.classList.add('hoverroll');
+    const roll=document.createElement('span');roll.className='roll';
+    const orig=document.createElement('span');orig.className='rl orig';
+    el.insertBefore(roll,label[0]);            // claim the label's DOM slot (keeps any trailing arrow/icon in place)
+    label.forEach(n=>orig.appendChild(n));      // move the label into the first copy
+    roll.appendChild(orig);
+    const dup=orig.cloneNode(true);dup.className='rl dup';dup.setAttribute('aria-hidden','true');
+    roll.appendChild(dup);
+  });
+})();
+
+// ============ capability tabs — sliding highlight + auto-cycle until interacted ============
+(function(){
+  const wrap=document.getElementById('capTabs');if(!wrap)return;
+  const tabs=[...wrap.querySelectorAll('button')];
+  const hl=wrap.querySelector('.tab-hl');
+  const caps=document.querySelectorAll('#capCap > span');
+  const panels=document.querySelectorAll('.cap-panel');
+  let i=0,timer=null,touched=false,inView=false;
+  function moveHL(){const b=tabs[i];if(hl&&b){hl.style.left=b.offsetLeft+'px';hl.style.width=b.offsetWidth+'px';}}
+  function sel(k){i=(k+tabs.length)%tabs.length;const id=''+i;
+    tabs.forEach((b,j)=>b.classList.toggle('on',j===i));
+    caps.forEach(c=>c.hidden=c.dataset.i!==id);
+    panels.forEach(pa=>pa.classList.toggle('on',pa.dataset.i===id));
+    moveHL();}
+  function start(){stop();if(touched||!inView||document.visibilityState!=='visible')return;timer=setInterval(()=>sel(i+1),3800);}
+  function stop(){if(timer){clearInterval(timer);timer=null;}}
+  tabs.forEach((t,j)=>t.addEventListener('click',()=>{touched=true;stop();sel(j);}));
+  wrap.addEventListener('mouseenter',stop);
+  wrap.addEventListener('mouseleave',start);
+  window.addEventListener('resize',moveHL);
+  document.addEventListener('visibilitychange',start);
+  new MutationObserver(()=>setTimeout(moveHL,60)).observe(document.documentElement,{attributes:true,attributeFilter:['data-lang']});
+  sel(0);requestAnimationFrame(moveHL);setTimeout(moveHL,320);
+  if('IntersectionObserver' in window){new IntersectionObserver(es=>es.forEach(e=>{inView=e.isIntersecting;if(e.isIntersecting){moveHL();start();}else stop();}),{threshold:.3}).observe(wrap);}
+  else{inView=true;start();}
+})();
+
+// ============ ROI calculator ============
+(function(){
+  const rng=document.getElementById('cRange');if(!rng)return;
+  const elVal=document.getElementById('cVal'),elSave=document.getElementById('cSave'),elRisk=document.getElementById('cRisk');
+  const yuan=n=>n.toLocaleString('en-US'), r100=n=>Math.round(n/100)*100;
+  function paint(){
+    const v=+rng.value,min=+rng.min,max=+rng.max,p=(v-min)/(max-min)*100;
+    rng.style.background='linear-gradient(90deg,var(--black) '+p+'%,#ECEAE6 '+p+'%)';
+    elVal.innerHTML='<small>¥</small>'+yuan(v)+(v>=max?'+':'');
+    elSave.textContent='¥'+yuan(r100(v*0.12))+'–'+yuan(r100(v*0.15));
+    elRisk.textContent=Math.max(5,Math.min(14,5+Math.floor((v-10000)/25000)));
+  }
+  rng.addEventListener('input',paint);paint();
+})();
+
+// ============ count-up (setTimeout fallback kept) ============
+(function(){
+  const fmt=n=>n.toLocaleString('en-US');
+  const write=(el,val)=>{const suf=el.dataset.suffix||'';
+    el.innerHTML=fmt(val)+(suf?(el.dataset.small==='1'?'<small>'+suf+'</small>':suf):'');};
+  const els=document.querySelectorAll('[data-count]');
+  const go=el=>{const end=+el.dataset.count,t0=performance.now(),dur=1300;
+    const tick=t=>{const p=Math.min((t-t0)/dur,1);write(el,Math.round(end*(1-Math.pow(1-p,3))));if(p<1)requestAnimationFrame(tick);};
+    requestAnimationFrame(tick);setTimeout(()=>{write(el,end);},dur+250);};
+  if(!('IntersectionObserver' in window)||document.visibilityState!=='visible'){els.forEach(el=>write(el,+el.dataset.count));return;}
+  const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){go(e.target);io.unobserve(e.target);}});},{threshold:.4});
+  els.forEach(el=>io.observe(el));
+})();
+
+// ============ report card tabs (clickable) ============
+(function(){
+  const tabs=document.getElementById('rTabs');if(!tabs)return;
+  const spans=[...tabs.querySelectorAll('span[data-tab]')];
+  const panels=[...document.querySelectorAll('.report .rpanel')];
+  spans.forEach(sp=>sp.addEventListener('click',()=>{
+    const t=sp.dataset.tab;
+    spans.forEach(x=>x.classList.toggle('on',x===sp));
+    panels.forEach(pa=>pa.classList.toggle('on',pa.dataset.tab===t));
+  }));
+})();
+
+// ============ carousel (auto-advances until the user interacts / hovers) ============
+(function(){
+  const root=document.querySelector('.caro');if(!root)return;
+  const slides=root.querySelectorAll('.slide'),dots=document.querySelectorAll('#caroDots i');
+  let i=0,n=slides.length,timer=null,inView=false;
+  function show(k){i=(k+n)%n;const pv=(i-1+n)%n,nx=(i+1)%n;
+    slides.forEach((sl,j)=>{sl.classList.remove('is-active','is-prev','is-next');
+      sl.classList.add(j===i?'is-active':(j===pv?'is-prev':(j===nx?'is-next':'is-off')));});
+    dots.forEach((d,j)=>d.classList.toggle('on',j===i));}
+  show(0);
+  function start(){stop();if(inView&&document.visibilityState==='visible')timer=setInterval(()=>show(i+1),5000);}
+  function stop(){if(timer){clearInterval(timer);timer=null;}}
+  root.querySelector('.caro-btn.prev').addEventListener('click',()=>{show(i-1);start();});
+  root.querySelector('.caro-btn.next').addEventListener('click',()=>{show(i+1);start();});
+  dots.forEach((d,j)=>d.addEventListener('click',()=>{show(j);start();}));
+  root.addEventListener('mouseenter',stop);root.addEventListener('mouseleave',start);
+  // drag / swipe to change slides (pointer covers mouse + touch)
+  let sx=0,sy=0,drag=false;const stage=root.querySelector('.slides');
+  stage.style.cursor='grab';stage.style.touchAction='pan-y';
+  stage.addEventListener('pointerdown',e=>{sx=e.clientX;sy=e.clientY;drag=true;stage.style.cursor='grabbing';stop();});
+  window.addEventListener('pointerup',e=>{if(!drag)return;drag=false;stage.style.cursor='grab';
+    const dx=e.clientX-sx,dy=e.clientY-sy;
+    if(Math.abs(dx)>44&&Math.abs(dx)>Math.abs(dy)){show(dx<0?i+1:i-1);}start();});
+  document.addEventListener('visibilitychange',start);
+  if('IntersectionObserver' in window){new IntersectionObserver(es=>es.forEach(e=>{inView=e.isIntersecting;e.isIntersecting?start():stop();}),{threshold:.3}).observe(root);}
+  else{inView=true;start();}
+})();
+
+// ============ hero-media flowing MESH gradient (stirs with the cursor) ============
+(function(){
+  const box=document.querySelector('.hero-media');if(!box)return;
+  const cv=document.createElement('canvas');cv.id='hmFx';box.insertBefore(cv,box.firstChild);
+  const ctx=cv.getContext('2d');
+  const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+  const SCALE=0.42;                       // blurry mesh needs no high res → cheap
+  let W=0,H=0;
+  const cols=['#C4E074','#83BAEC','#A2D8B8','#B4DEF2','#D2EA92'];  // 问龟 green-blue mesh
+  const blobs=cols.map((c,i)=>({c,ph:i*1.9,ax:.17+.05*(i%3),ay:.15+.05*((i+1)%3),
+    fx:.22+.05*i,fy:.18+.045*i,par:.5-i*.07}));
+  let mx=.5,my=.5,tmx=.5,tmy=.5,t=0;
+  function size(){const r=box.getBoundingClientRect();
+    W=cv.width=Math.max(1,Math.round(r.width*SCALE));H=cv.height=Math.max(1,Math.round(r.height*SCALE));
+    cv.style.width=r.width+'px';cv.style.height=r.height+'px';draw(0);}
+  box.addEventListener('pointermove',e=>{const r=box.getBoundingClientRect();
+    tmx=(e.clientX-r.left)/r.width;tmy=(e.clientY-r.top)/r.height;});
+  box.addEventListener('pointerleave',()=>{tmx=.5;tmy=.5;});
+  function draw(dt){
+    if(W<2)return;
+    t+=dt;mx+=(tmx-mx)*.07;my+=(tmy-my)*.07;
+    ctx.filter='none';ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over';
+    ctx.fillStyle='#EDF6E0';ctx.fillRect(0,0,W,H);
+    ctx.filter='blur('+Math.round(Math.max(W,H)*0.075)+'px)';
+    const R=Math.max(W,H)*0.62;
+    blobs.forEach(b=>{
+      const cx=(0.5+Math.sin(t*b.fx+b.ph)*b.ax+(mx-0.5)*b.par)*W;
+      const cy=(0.5+Math.cos(t*b.fy+b.ph*1.3)*b.ay+(my-0.5)*b.par)*H;
+      const g=ctx.createRadialGradient(cx,cy,0,cx,cy,R);
+      g.addColorStop(0,b.c);g.addColorStop(1,'rgba(255,255,255,0)');
+      ctx.globalAlpha=0.9;ctx.fillStyle=g;ctx.beginPath();ctx.arc(cx,cy,R,0,7);ctx.fill();
+    });
+    // bright green bloom that follows the cursor — the visible mouse effect
+    const ccx=mx*W,ccy=my*H,cr=Math.max(W,H)*0.42;
+    const cg=ctx.createRadialGradient(ccx,ccy,0,ccx,ccy,cr);
+    cg.addColorStop(0,'#BEE06A');cg.addColorStop(0.5,'rgba(160,215,120,0.5)');cg.addColorStop(1,'rgba(255,255,255,0)');
+    ctx.globalAlpha=0.9;ctx.fillStyle=cg;ctx.beginPath();ctx.arc(ccx,ccy,cr,0,7);ctx.fill();
+    ctx.filter='none';ctx.globalAlpha=1;
+  }
+  size();window.addEventListener('resize',size);
+  if(reduce){draw(0);return;}
+  (function loop(){if(!document.hidden)draw(0.006);requestAnimationFrame(loop);})();
+})();
+
+// ============ disclosure controls: one predictable interaction for every caret ============
+(function(){
+  var uid=0;
+  function bind(trigger,panel,owner,collapsedClass){
+    if(!trigger||!panel||!owner)return function(){};
+    if(!panel.id)panel.id='wg-disclosure-'+(++uid);
+    if(trigger.tagName!=='BUTTON'){
+      trigger.setAttribute('role','button');
+      trigger.setAttribute('tabindex','0');
+    }
+    trigger.setAttribute('aria-controls',panel.id);
+    var sync=function(){trigger.setAttribute('aria-expanded',String(!owner.classList.contains(collapsedClass)));};
+    var toggle=function(){owner.classList.toggle(collapsedClass);sync();};
+    trigger.addEventListener('click',toggle);
+    trigger.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle();}});
+    sync();
+    return sync;
+  }
+
+  var card=document.getElementById('agentCard');
+  if(card){
+    var syncProcess=bind(card.querySelector('.at'),card.querySelector('.abody'),card,'collapsed');
+    var result=card.querySelector('.pr');
+    bind(result&&result.querySelector('.pr-head'),result&&result.querySelector('.pr-body'),result,'is-collapsed');
+    new MutationObserver(syncProcess).observe(card,{attributes:true,attributeFilter:['class']});
+  }
+
+  document.querySelectorAll('#qcmp .qcp').forEach(function(section){
+    var trigger=section.querySelector('.qfig-head,.qplan-head');
+    var panel=section.querySelector('.qfig-body,.qplan-body');
+    bind(trigger,panel,section,'is-collapsed');
+  });
+
+  document.querySelectorAll('.rpt-sec>header').forEach(function(head,index){
+    var section=head.parentElement,panel=head.nextElementSibling;
+    if(panel&&!panel.id)panel.id='rpt-panel-'+(index+1);
+    bind(head,panel,section,'is-collapsed');
+  });
+
+  var faqItems=Array.from(document.querySelectorAll('.faq'));
+  faqItems.forEach(function(item,index){
+    var button=item.querySelector('.faq-q'),panel=item.querySelector('.faq-a');
+    if(!button||!panel)return;
+    if(!panel.id)panel.id='faq-panel-'+(index+1);
+    button.setAttribute('aria-controls',panel.id);
+    button.setAttribute('aria-expanded',String(item.classList.contains('open')));
+    button.addEventListener('click',function(){
+      var wasOpen=item.classList.contains('open');
+      faqItems.forEach(function(other){
+        other.classList.remove('open');
+        var otherPanel=other.querySelector('.faq-a'),otherButton=other.querySelector('.faq-q');
+        if(otherPanel)otherPanel.style.maxHeight=null;
+        if(otherButton)otherButton.setAttribute('aria-expanded','false');
+      });
+      if(!wasOpen){item.classList.add('open');panel.style.maxHeight=panel.scrollHeight+'px';button.setAttribute('aria-expanded','true');}
+    });
+    if(item.classList.contains('open'))panel.style.maxHeight=panel.scrollHeight+'px';
+  });
+})();
+
+// ============ film: cursor-follow play chip ============
+(function(){
+  const box=document.getElementById('filmBox'); if(!box)return;
+  const cur=document.getElementById('filmCursor');
+  const v=document.getElementById('wgFilm');
+  const playing=()=>box.classList.contains('playing');
+  // language-aware ad: zh / en cuts
+  const FILM_SRC={zh:'assets/shellmind-ad.mp4',en:'assets/shellmind-ad-en.mp4'};
+  function filmLang(){return document.documentElement.getAttribute('data-lang')==='en'?'en':'zh';}
+  function setFilmSrc(){
+    const want=FILM_SRC[filmLang()];
+    if(!v||v.getAttribute('src')===want)return;
+    const t=v.currentTime||0, resume=playing()&&!v.paused;
+    v.setAttribute('src',want); v.load();
+    if(playing()){
+      v.addEventListener('canplay',function once(){
+        v.removeEventListener('canplay',once);
+        try{v.currentTime=Math.min(t,v.duration||t);}catch(e){}
+        if(resume)v.play().catch(function(){});
+      });
+    }
+  }
+  setFilmSrc();
+  new MutationObserver(setFilmSrc).observe(document.documentElement,{attributes:true,attributeFilter:['data-lang']});
+  if(cur&&matchMedia('(hover:hover)').matches){
+    let qx=null,qy=null;
+    if(window.gsap){qx=gsap.quickTo(cur,'left',{duration:.28,ease:'power3.out'});qy=gsap.quickTo(cur,'top',{duration:.28,ease:'power3.out'});}
+    box.addEventListener('mouseenter',e=>{if(playing())return;cur.style.left=e.clientX+'px';cur.style.top=e.clientY+'px';cur.style.display='inline-flex';});
+    box.addEventListener('mousemove',e=>{if(playing())return;if(qx){qx(e.clientX);qy(e.clientY);}else{cur.style.left=e.clientX+'px';cur.style.top=e.clientY+'px';}});
+    box.addEventListener('mouseleave',()=>{cur.style.display='none';});
+  }
+  box.addEventListener('click',()=>{
+    if(playing())return;                          // once playing, let the native controls handle clicks
+    if(v&&v.getAttribute('src')){box.classList.add('playing');v.play();cur&&(cur.style.display='none');}
+  });
+})();
+
+// mobile burger → final CTA
+document.querySelector('.burger').addEventListener('click',()=>{document.getElementById('final').scrollIntoView({behavior:'smooth'});});
+
+// ============ nav hides on scroll-down, returns on scroll-up ============
+(function(){
+  const nav=document.querySelector('.nav');if(!nav)return;
+  let last=window.scrollY,ticking=false;
+  function upd(){const y=window.scrollY;
+    if(y>last&&y>140)nav.classList.add('nav--hide');else nav.classList.remove('nav--hide');
+    last=y;ticking=false;}
+  window.addEventListener('scroll',()=>{if(!ticking){requestAnimationFrame(upd);ticking=true;}},{passive:true});
+})();
+
+// ============ GSAP orchestrator — Antigravity-style opening + varied scroll reveals ============
+(function(){
+  if(!window.__GSAP_MODE)return;
+  const html=document.documentElement;
+  gsap.registerPlugin(ScrollTrigger);
+  document.querySelectorAll('.wfade').forEach(h=>h.classList.add('in'));
+
+  function opening(){
+    html.classList.add('gsap-on'); // gates chat msg/arow CSS from this moment only
+    const kids=['.hero-sub','.hero-ticks','.hero-cta','.hero-media'].map(q=>document.querySelector(q)).filter(Boolean);
+    gsap.set(kids,{autoAlpha:0,y:26});
+    const chip=document.querySelector('.hero-chip');
+    if(chip)gsap.set(chip,{autoAlpha:0,scale:.85,y:8});
+    window.__WG.renderEmpty&&window.__WG.renderEmpty();
+    window.__WG.onTypeDone=function(){
+      const tl=gsap.timeline({defaults:{ease:'power3.out',duration:.7}});
+      tl.to('.hero-sub',{autoAlpha:1,y:0})
+        .to('.hero-ticks',{autoAlpha:1,y:0},'-=.45')
+        .fromTo('.hero-ticks span',{autoAlpha:0,y:10},{autoAlpha:1,y:0,duration:.45,stagger:.09,ease:'power2.out'},'<')
+        .to('.hero-cta',{autoAlpha:1,y:0,ease:'back.out(1.4)'},'-=.35')
+        .to('.hero-media',{autoAlpha:1,y:0,duration:1.05,ease:'expo.out'},'-=.35')
+        .to(chip,{autoAlpha:1,scale:1,y:0,duration:.5,ease:'back.out(1.8)'},'-=.4')
+        .add(()=>{window.__WG.playChat&&window.__WG.playChat();},'-=.2');
+    };
+    setTimeout(()=>window.__WG.typeHero&&window.__WG.typeHero(),750);
+  }
+  function initScroll(){
+    const rev=[...document.querySelectorAll('.reveal')].filter(el=>!el.closest('.hero'));
+    gsap.set(rev,{autoAlpha:0,y:34});
+    ScrollTrigger.batch(rev,{
+      start:'top 92%',once:true,
+      onEnter:b2=>gsap.to(b2,{autoAlpha:1,y:0,duration:.85,ease:'power3.out',stagger:.09,overwrite:true})
+    });
+    document.querySelectorAll('.bart,.caro,.faq-card').forEach(el=>{
+      gsap.fromTo(el,{scale:1.035},{scale:1,duration:1.15,ease:'expo.out',
+        scrollTrigger:{trigger:el,start:'top 88%',once:true}});
+    });
+    document.querySelectorAll('.wfade').forEach(h=>{
+      const ws=h.querySelectorAll('.w'); if(!ws.length)return;
+      gsap.fromTo(ws,{opacity:.14,y:8},{opacity:1,y:0,duration:.5,ease:'power2.out',stagger:.02,
+        scrollTrigger:{trigger:h,start:'top 82%',once:true}});
+    });
+    document.querySelectorAll('.section .chip,.final .chip').forEach(c=>{
+      gsap.fromTo(c,{autoAlpha:0,scale:.88},{autoAlpha:1,scale:1,duration:.5,ease:'back.out(2)',
+        scrollTrigger:{trigger:c,start:'top 94%',once:true}});
+    });
+    // hero recedes as you scroll — stays crisp until the chat card is ~halfway out, then dissolves
+    gsap.to('.hero .wrap',{opacity:0,y:-40,ease:'none',
+      scrollTrigger:{trigger:'.hero-media',start:'center top',end:'bottom 8%',scrub:.5}});
+  }
+  // ----- Antigravity-style particle field (native Canvas) in 问龟 palette -----
+  function initParticles(){
+    const cv=document.getElementById('heroFx'); if(!cv)return;
+    const ctx=cv.getContext('2d'); if(!ctx)return;
+    const dpr=Math.min(2,window.devicePixelRatio||1);
+    const COLORS=['#4A79D2','#51A1FF','#7BB8F0','#46B277','#7D8A6E','#9FCB88','#F2A65A','#E8B23A'];
+    let W=0,H=0,P=[],boost=0;
+    function size(){const r=cv.getBoundingClientRect();W=cv.width=Math.max(1,r.width*dpr);H=cv.height=Math.max(1,r.height*dpr);}
+    size();window.addEventListener('resize',size);
+    const N=Math.min(170,Math.round(window.innerWidth/9));
+    for(let i=0;i<N;i++){
+      const right=Math.random()<.7;
+      P.push({x:(right?.52+Math.random()*.5:Math.random()*.46)*W,y:Math.random()*H,
+        vx:(Math.random()-.5)*.14,vy:-(.03+Math.random()*.14),
+        s:(1+Math.random()*2.1)*dpr,a:.3+Math.random()*.55,
+        c:COLORS[(Math.random()*COLORS.length)|0],r:Math.random()*Math.PI});
+    }
+    let lastY=window.scrollY;
+    window.addEventListener('scroll',()=>{boost=Math.min(3.2,boost+Math.abs(window.scrollY-lastY)/110);lastY=window.scrollY;},{passive:true});
+    (function frame(){
+      if(!document.hidden&&W>1){
+        ctx.clearRect(0,0,W,H);
+        const b=1+boost*2.4;boost*=.92;
+        for(const pt of P){
+          pt.x+=pt.vx*dpr;pt.y+=pt.vy*b*dpr;
+          if(pt.y<-8){pt.y=H+8;pt.x=Math.random()*W;}
+          if(pt.x<-8)pt.x=W+8;else if(pt.x>W+8)pt.x=-8;
+          ctx.save();ctx.translate(pt.x,pt.y);ctx.rotate(pt.r);
+          ctx.globalAlpha=pt.a;ctx.fillStyle=pt.c;
+          ctx.beginPath();ctx.ellipse(0,0,pt.s*.55,pt.s*1.3,0,0,Math.PI*2);ctx.fill();ctx.restore();
+        }
+      }
+      requestAnimationFrame(frame);
+    })();
+  }
+  function engage(){opening();initScroll();initParticles();}
+  if(document.visibilityState==='visible'){engage();}
+  else{
+    // hidden tab: stay fully static & visible; play the opening on first reveal
+    document.addEventListener('visibilitychange',function onv(){
+      if(document.visibilityState!=='visible')return;
+      document.removeEventListener('visibilitychange',onv);
+      engage();
+    });
+  }
+})();
+</script>
+<style>
+.wg-toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(16px);z-index:600;
+  background:var(--black);color:#fff;padding:12px 20px;border-radius:var(--r-pill);font-size:13.5px;line-height:1.4;
+  box-shadow:var(--sh-lg);opacity:0;pointer-events:none;transition:opacity .3s var(--settle),transform .3s var(--settle);
+  max-width:calc(100% - 32px);text-align:center;}
+.wg-toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+/* ===== setup-guide modal ===== */
+.wg-modal{position:fixed;inset:0;z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;
+  opacity:0;visibility:hidden;transition:opacity .3s var(--settle),visibility .3s;}
+.wg-modal.on{opacity:1;visibility:visible;}
+.wg-mask{position:absolute;inset:0;background:rgba(22,26,18,.45);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);}
+.wg-card{position:relative;background:#fff;border-radius:var(--r-xl);box-shadow:var(--sh-lg);padding:32px 30px 26px;
+  max-width:430px;width:100%;text-align:left;transform:translateY(14px) scale(.97);transition:transform .35s var(--settle);}
+.wg-modal.on .wg-card{transform:none;}
+.wg-x{position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:50%;border:0;background:#F3F1EE;
+  color:var(--ink2);cursor:pointer;font-size:13px;line-height:1;transition:background .2s;}
+.wg-x:hover{background:#E9E7E3;}
+.wg-x svg,.wg-x img{width:13px;height:13px;display:block;margin:auto;}
+.wg-mk{width:38px;height:38px;margin-bottom:12px;}
+.wg-card h3{font-size:20px;font-weight:700;letter-spacing:-.01em;margin:0 0 18px;}
+.wg-steps{list-style:none;margin:0 0 20px;padding:0;display:flex;flex-direction:column;gap:13px;}
+.wg-steps li{display:flex;gap:11px;align-items:flex-start;font-size:13.5px;color:var(--ink2);line-height:1.55;}
+.wg-steps li i{font-style:normal;width:22px;height:22px;border-radius:50%;background:var(--save-soft);color:var(--save);
+  font-size:11.5px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none;margin-top:1px;}
+.wg-cta{width:100%;}
+.wg-note{font-size:11.5px;color:var(--muted);text-align:center;margin:12px 0 0;}
+.wg-sub{font-size:13.5px;color:var(--ink2);line-height:1.6;margin:0 0 20px;}
+.wg-qr{width:min(320px,100%);margin:0 auto;border:1px solid var(--line);border-radius:16px;background:#fff;overflow:hidden;}
+.wg-qr img{width:100%;height:auto;display:block;}
+.wg-qr-cap{font-size:12.5px;color:var(--muted);text-align:center;margin:14px 0 0;}
+</style>
+<div class="wg-toast" id="wgToast" role="status" aria-live="polite"><span class="zh">小程序链接已复制 · 打开微信「粘贴」即可进入问龟</span><span class="en">Link copied — paste it into WeChat to open Shellmind</span></div>
+<div class="wg-modal" id="wgGuide" aria-hidden="true">
+  <div class="wg-mask" data-close></div>
+  <div class="wg-card" role="dialog" aria-modal="true" aria-labelledby="wgGuideTitle">
+    <button class="wg-x" type="button" data-close aria-label="关闭"><img src="assets/lucide/x.svg" alt=""/></button>
+    <img class="wg-mk" src="assets/mark.png" alt="" />
+    <h3 id="wgGuideTitle"><span class="zh">三步，给报价单做个体检</span><span class="en">Three steps to a quote check</span></h3>
+    <ol class="wg-steps">
+      <li><i>1</i><span><span class="zh">复制小程序链接，去微信里打开问龟</span><span class="en">Copy the mini-program link and open Shellmind in WeChat</span></span></li>
+      <li><i>2</i><span><span class="zh">上传报价单——拍照、截图、PDF 都可以</span><span class="en">Upload your quote — a photo, screenshot or PDF all work</span></span></li>
+      <li><i>3</i><span><span class="zh">约 30 秒拿到免费诊断，需要再解锁完整报告</span><span class="en">Get a free diagnosis in ~30s; unlock the full report only if you need it</span></span></li>
+    </ol>
+    <a class="btn btn-black wg-cta js-mp" data-mp="#小程序://问龟AI/I8z8ZF5zycwyKle" href="#"><img class="btn-icon" src="assets/lucide/copy.svg" alt=""/><span class="zh">复制小程序链接</span><span class="en">Copy the mini-program link</span></a>
+    <p class="wg-note"><span class="zh">完整报告 ¥29.9/份 · 不订阅 · 不自动续费</span><span class="en">Full report ¥29.9 per quote · no subscription, no auto-renew</span></p>
+  </div>
+</div>
+<div class="wg-modal" id="wgCommunity" aria-hidden="true">
+  <div class="wg-mask" data-close></div>
+  <div class="wg-card" role="dialog" aria-modal="true" aria-labelledby="wgCommTitle">
+    <button class="wg-x" type="button" data-close aria-label="关闭"><img src="assets/lucide/x.svg" alt=""/></button>
+    <img class="wg-mk" src="assets/mark.png" alt="" />
+    <h3 id="wgCommTitle"><span class="zh">加入问龟业主社区</span><span class="en">Join the Shellmind community</span></h3>
+    <p class="wg-sub"><span class="zh">和正在装修的业主们一起——晒报价、避坑、互相支招。</span><span class="en">Renovating homeowners — comparing quotes, dodging pitfalls, backing each other up.</span></p>
+    <div class="wg-qr"><img src="assets/Weixin Image_20260721233511_128_1.jpg" alt="全屋定制业主互助社群二维码"/></div>
+    <p class="wg-qr-cap"><span class="zh">微信扫码，进业主群</span><span class="en">Scan with WeChat to join</span></p>
+  </div>
+</div>
+<script>
+(function(){
+  var toast=document.getElementById('wgToast'), timer;
+  var tZh=toast?toast.querySelector('.zh'):null, tEn=toast?toast.querySelector('.en'):null;
+  function showToast(zh,en){
+    if(!toast)return;
+    if(tZh)tZh.textContent=zh; if(tEn)tEn.textContent=en;
+    toast.classList.add('show');clearTimeout(timer);timer=setTimeout(function(){toast.classList.remove('show');},3400);
+  }
+  function fallback(text){try{var ta=document.createElement('textarea');ta.value=text;ta.setAttribute('readonly','');ta.style.position='fixed';ta.style.left='-9999px';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);}catch(e){}}
+  function copy(text){if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).catch(function(){fallback(text);});}else{fallback(text);}}
+  document.querySelectorAll('.js-mp').forEach(function(a){
+    a.addEventListener('click',function(e){
+      e.preventDefault();
+      copy(a.getAttribute('data-mp')||'');
+      showToast('小程序链接已复制 · 打开微信「粘贴」即可进入问龟','Link copied — paste it into WeChat to open Shellmind');
+    });
+  });
+  document.querySelectorAll('.js-soon').forEach(function(a){
+    a.addEventListener('click',function(e){
+      e.preventDefault();
+      showToast('电脑端 Web 版正在打磨中 · 敬请期待','The desktop web version is on its way — stay tuned');
+    });
+  });
+  var guide=document.getElementById('wgGuide'), comm=document.getElementById('wgCommunity');
+  function openModal(m){if(!m)return;m.classList.add('on');m.setAttribute('aria-hidden','false');document.documentElement.style.overflow='hidden';}
+  function closeModal(m){if(!m)return;m.classList.remove('on');m.setAttribute('aria-hidden','true');document.documentElement.style.overflow='';}
+  document.querySelectorAll('.js-guide').forEach(function(a){
+    a.addEventListener('click',function(e){e.preventDefault();openModal(guide);});
+  });
+  document.querySelectorAll('.js-comm').forEach(function(a){
+    a.addEventListener('click',function(e){e.preventDefault();openModal(comm);});
+  });
+  [guide,comm].forEach(function(m){
+    if(!m)return;
+    m.querySelectorAll('[data-close]').forEach(function(el){el.addEventListener('click',function(){closeModal(m);});});
+  });
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeModal(guide);closeModal(comm);}});
+
+  // Keep the capability-card copy action consistent with the report control:
+  // confirmation replaces the button label in place, without a floating toast.
+  var capCopyBtn=document.querySelector('.cap-copybtn');
+  if(capCopyBtn){
+    capCopyBtn.addEventListener('click',function(){
+      capCopyBtn.classList.add('is-copied');
+      capCopyBtn.setAttribute('aria-pressed','true');
+      var icon=capCopyBtn.querySelector('img'),zh=capCopyBtn.querySelector('.zh'),en=capCopyBtn.querySelector('.en');
+      if(icon)icon.src='assets/figma-report/exact-v2/copy-success.svg';
+      if(zh)zh.textContent='复制给商家';
+      if(en)en.textContent='Copy for merchant';
+      var lang=document.documentElement.getAttribute('data-lang')==='en'?'.en':'.zh';
+      var card=capCopyBtn.closest('.script');
+      var text=card?Array.from(card.querySelectorAll('.q '+lang+',.why '+lang)).filter(function(el){return getComputedStyle(el).display!=='none';}).map(function(el){return el.textContent.trim();}).filter(Boolean).join('\n'):'';
+      try{copy(text);}catch(e){}
+    });
+  }
+
+  // Full-report demo: Figma-accurate controls with quiet, reversible interactions.
+  var report=document.querySelector('.rpt');
+  if(report){
+    var reportText=function(){
+      var lang=document.documentElement.getAttribute('data-lang')==='en'?'.en':'.zh';
+      return Array.from(report.querySelectorAll(lang)).filter(function(el){return getComputedStyle(el).display!=='none';}).map(function(el){return el.textContent.trim();}).filter(Boolean).join('\n');
+    };
+    report.querySelectorAll('.rpt-x').forEach(function(row){
+      row.addEventListener('click',function(){
+        row.classList.add('is-sent');
+        showToast('问题已发送，正在为你继续分析','Question sent — continuing the analysis');
+        setTimeout(function(){row.classList.remove('is-sent');},900);
+      });
+    });
+    report.querySelectorAll('.rpt-why .vw').forEach(function(btn){
+      btn.addEventListener('click',function(){
+        var box=btn.closest('.rpt-why'),open=!box.classList.contains('is-open');
+        box.classList.toggle('is-open',open);btn.setAttribute('aria-expanded',String(open));
+        var zh=btn.querySelector('.zh'),en=btn.querySelector('.en');
+        if(zh)zh.textContent=open?'收起':'查看';
+        if(en)en.textContent=open?'hide':'view';
+      });
+    });
+    var copyReport=function(){copy(reportText());showToast('报告内容已复制','Report copied');};
+    report.querySelectorAll('.rpt-copybtn,.rpt-copyrow').forEach(function(btn){
+      btn.addEventListener('click',function(){
+        btn.classList.add('is-copied');btn.setAttribute('aria-pressed','true');
+        var icon=btn.querySelector('img'),zh=btn.querySelector('.zh'),en=btn.querySelector('.en');
+        if(icon)icon.src='assets/figma-report/exact-v2/copy-success.svg';
+        if(zh)zh.textContent='复制给商家';
+        if(en)en.textContent='Copy for merchant';
+        try{copy(reportText());}catch(e){}
+      });
+    });
+    report.querySelectorAll('.rpt-mini.copy').forEach(function(btn){btn.addEventListener('click',copyReport);});
+    report.querySelectorAll('.rpt-share,.rt-action[aria-label="share"]').forEach(function(btn){btn.addEventListener('click',function(){copy(location.href);showToast('报告链接已复制','Report link copied');});});
+    var rating=Array.from(report.querySelectorAll('.rpt-mini.is-rating'));
+    rating.forEach(function(btn){btn.addEventListener('click',function(){var next=btn.getAttribute('aria-pressed')!=='true';rating.forEach(function(x){x.classList.remove('is-active');x.setAttribute('aria-pressed','false');});if(next){btn.classList.add('is-active');btn.setAttribute('aria-pressed','true');}showToast(next?'感谢你的反馈':'已取消反馈',next?'Thanks for the feedback':'Feedback cleared');});});
+    var bookmark=report.querySelector('.rpt-mini.bookmark');
+    if(bookmark)bookmark.addEventListener('click',function(){var on=bookmark.getAttribute('aria-pressed')!=='true';bookmark.setAttribute('aria-pressed',String(on));bookmark.classList.toggle('is-active',on);showToast(on?'报告已收藏':'已取消收藏',on?'Report bookmarked':'Bookmark removed');});
+    var more=report.querySelector('.rt-action[aria-label="more"]');
+    if(more)more.addEventListener('click',function(){showToast('更多报告操作即将开放','More report actions are coming');});
+    var dl=report.querySelector('.rpt-dl');
+    if(dl)dl.addEventListener('click',function(){
+      var blob=new Blob([reportText()],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');
+      a.href=url;a.download='Shellmind-quote-report.txt';document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url);},1000);
+      showToast('完整报告已开始下载','Full report download started');
+    });
+  }
+})();
+</script>
+</body>
+</html>
