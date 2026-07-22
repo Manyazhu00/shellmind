@@ -38,6 +38,8 @@ test("publishes the English-first Shellmind homepage", async () => {
 
   assert.match(html, /<html lang="en" data-lang="en">/);
   assert.match(html, /apply\(s\|\|'en'\)/);
+  assert.match(html, /Know what’s fair<br>before you sign\./);
+  assert.match(html, /Benchmark every price/);
   assert.match(html, /assets\/shellmind-ad-480\.m4v/);
   assert.match(html, /assets\/shellmind-ad-en-480\.m4v/);
   assert.match(layout, /title:\s*"Shellmind · AI Renovation Concierge"/);

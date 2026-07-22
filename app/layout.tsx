@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Shellmind · AI Renovation Concierge",
-  description: "Upload a quote to understand pricing, risks, and bargaining room.",
+  description: "Know what’s fair before you sign. Shellmind checks renovation quotes for overpricing, hidden risks, and room to negotiate.",
   icons: {
     icon: "/assets/shellmind-dark.png",
     shortcut: "/assets/shellmind-dark.png",
