@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-lang="zh">
+<html lang="en" data-lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -1406,7 +1406,7 @@ html.js-anim .reveal.in{opacity:1;transform:none;}
       <p><span class="zh">上传报价单之前，先花一分钟认识这只站在你这边的龟。</span><span class="en">Before you upload a quote, spend a minute with the turtle on your side.</span></p>
     </div>
     <div class="film reveal" id="filmBox">
-      <video id="wgFilm" src="assets/shellmind-ad.mp4" preload="metadata" playsinline controls></video>
+      <video id="wgFilm" src="assets/shellmind-ad-480.m4v" preload="metadata" playsinline controls></video>
     </div>
   </div>
 </section>
@@ -1597,7 +1597,7 @@ html.js-anim .reveal.in{opacity:1;transform:none;}
 window.__WG={};
 window.__GSAP_MODE=!!(window.gsap&&window.ScrollTrigger)
   &&!matchMedia('(prefers-reduced-motion:reduce)').matches&&('IntersectionObserver' in window);
-// ============ language (browser default, persisted) ============
+// ============ language (English first, persisted) ============
 (function(){
   const root=document.documentElement, btns=document.querySelectorAll('.langtoggle button');
   function apply(l){l=l==='en'?'en':'zh';root.setAttribute('data-lang',l);
@@ -1605,7 +1605,7 @@ window.__GSAP_MODE=!!(window.gsap&&window.ScrollTrigger)
     btns.forEach(b=>b.classList.toggle('on',b.dataset.lang===l));
     try{localStorage.setItem('wg_lang',l);}catch(e){}}
   let s=null;try{s=localStorage.getItem('wg_lang');}catch(e){}
-  apply(s||(((navigator.language||'').toLowerCase().indexOf('zh')===0)?'zh':'en'));
+  apply(s||'en');
   btns.forEach(b=>b.addEventListener('click',()=>apply(b.dataset.lang)));
 })();
 
@@ -2051,7 +2051,7 @@ document.querySelectorAll('[data-wfade]').forEach(h=>{
   const v=document.getElementById('wgFilm');
   const playing=()=>box.classList.contains('playing');
   // language-aware ad: zh / en cuts
-  const FILM_SRC={zh:'assets/shellmind-ad.mp4',en:'assets/shellmind-ad-en.mp4'};
+  const FILM_SRC={zh:'assets/shellmind-ad-480.m4v',en:'assets/shellmind-ad-en-480.m4v'};
   function filmLang(){return document.documentElement.getAttribute('data-lang')==='en'?'en':'zh';}
   function setFilmSrc(){
     const want=FILM_SRC[filmLang()];

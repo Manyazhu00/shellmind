@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "问龟 Shellmind · AI 装修管家",
-  description: "上传报价单，读懂价格、风险与砍价空间。",
+  title: "Shellmind · AI Renovation Concierge",
+  description: "Upload a quote to understand pricing, risks, and bargaining room.",
   icons: {
     icon: "/assets/shellmind-dark.png",
     shortcut: "/assets/shellmind-dark.png",
@@ -16,7 +16,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="zh-CN">
+    <html lang="en">
       <body>{children}</body>
     </html>
   );
